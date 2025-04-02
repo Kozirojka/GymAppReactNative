@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const BookingScreen = () => {
+const AuthScreen = () => {
   return (
     <View style={styles.screenContainer}>
-      <Text>⚙️ Settings (Booking) Screen</Text>
+      <Text>Auth screen</Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookingScreen;
+export default AuthScreen;

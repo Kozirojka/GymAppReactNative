@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const DetailsScreen = ({ navigation }) => {
   return (
     <View style={styles.screenContainer}>
-      <Text>🏠 Home Screen</Text>
-      <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
+      <Text>📄 Details Screen</Text>
+      <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 };
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default DetailsScreen;
