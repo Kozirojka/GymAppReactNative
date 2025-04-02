@@ -3,38 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
-function HomeScreen() {
-  return (
-    <View style={styles.screenContainer}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
-
-function ProfileScreen() {
-  return (
-    <View style={styles.screenContainer}>
-      <Text>Profile Screen</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={styles.screenContainer}>
-      <Text>Settings Screen</Text>
-    </View>
-  );
-}
-
-function NotificationsScreen() {
-  return (
-    <View style={styles.screenContainer}>
-      <Text>Notifications Screen</Text>
-    </View>
-  );
-}
+import HomeScreen from './components/Tabs/Home/HomeScreen';
+import ProfileScreen from './components/Tabs/Profile/ProfileScreen';
+import BookingScreen from './components/Tabs/Booking/BookingScreen';
+import KnowledgeLibrary from './components/Tabs/KnowledgeLibrary/KnowledgeLibrary';
 
 const Tab = createBottomTabNavigator();
 
@@ -61,10 +33,10 @@ export default function App() {
           tabBarInactiveTintColor: 'gray',
         })}
       >
+        <Tab.Screen name="Settings" component={BookingScreen} />
+        <Tab.Screen name="Notifications" component={KnowledgeLibrary} />
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-        <Tab.Screen name="Notifications" component={NotificationsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
