@@ -4,10 +4,10 @@ import { View, Text, StyleSheet } from 'react-native';
 const BookingScreen = () => {
   return (
     <View style={styles.screenContainer}>
-      <Text>Home Screen</Text>
+      <Text>⚙️ Settings (Booking) Screen</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screenContainer: {

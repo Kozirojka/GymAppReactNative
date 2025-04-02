@@ -4,10 +4,10 @@ import { View, Text, StyleSheet } from 'react-native';
 const KnowledgeLibrary = () => {
   return (
     <View style={styles.screenContainer}>
-      <Text>Home Screen</Text>
+      <Text>🔔 Notifications (Knowledge Library)</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screenContainer: {
