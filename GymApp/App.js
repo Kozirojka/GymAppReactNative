@@ -1,71 +1,79 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, SafeAreaView, Button, View, TouchableOpacity } from 'react-native';
-import Modal from 'react-native-modal';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+
+function HomeScreen() {
+  return (
+    <View style={styles.screenContainer}>
+      <Text>Home Screen</Text>
+    </View>
+  );
+}
+
+function ProfileScreen() {
+  return (
+    <View style={styles.screenContainer}>
+      <Text>Profile Screen</Text>
+    </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={styles.screenContainer}>
+      <Text>Settings Screen</Text>
+    </View>
+  );
+}
+
+function NotificationsScreen() {
+  return (
+    <View style={styles.screenContainer}>
+      <Text>Notifications Screen</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.text} onPress={toggleModal}>Tap to show bottom sheet</Text>
-      <Button title="Show Modal" color="red" onPress={toggleModal} />
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
 
-      <Modal 
-        isVisible={isModalVisible} 
-        style={styles.modal} 
-        onBackdropPress={toggleModal} 
-        backdropOpacity={0.5}
+            if (route.name === 'Home') {
+              iconName = 'home';
+            } else if (route.name === 'Profile') {
+              iconName = 'person';
+            } else if (route.name === 'Settings') {
+              iconName = 'settings';
+            } else if (route.name === 'Notifications') {
+              iconName = 'notifications';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+        })}
       >
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Hello from bottom sheet!</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </SafeAreaView>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Notifications" component={NotificationsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    color: 'red',
-    marginBottom: 20,
-  },
-  modal: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  modalContent: {
-    height: '66%', // 2/3 екрану
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: 'red',
-    borderRadius: 10,
-  },
-  closeText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
 });
