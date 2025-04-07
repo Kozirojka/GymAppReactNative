@@ -112,9 +112,11 @@ const fetchTrainers = (searchQuery = '', selectedTags = []) => {
   });
 };
 
-const TrainerItem = ({ trainer, onPress }) => {
+const TrainerItem = ({ trainer, onPress, navigation2 }) => {
   return (
-    <TouchableOpacity style={styles.trainerItem} onPress={() => onPress(trainer)}>
+    <TouchableOpacity style={styles.trainerItem} onPress={() => navigation2.navigate('Schedule')}>
+
+
       <Image source={{ uri: trainer.image }} style={styles.trainerImage} />
       <View style={styles.trainerInfo}>
         <Text style={styles.trainerName}>{trainer.name}</Text>
@@ -138,7 +140,7 @@ const TrainerItem = ({ trainer, onPress }) => {
   );
 };
 
-const BookingScreen = () => {
+const BookingScreen = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -243,7 +245,7 @@ const BookingScreen = () => {
           data={trainers}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TrainerItem trainer={item} onPress={handleTrainerPress} />
+            <TrainerItem trainer={item} onPress={handleTrainerPress} navigation2={navigation} />
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContainer}
@@ -252,7 +254,7 @@ const BookingScreen = () => {
     </View>
   );
 };
-
+   
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -292,7 +294,6 @@ const styles = StyleSheet.create({
   clearButton: {
     padding: 5,
   },
-  // Стилі для секції тегів
   tagsSection: {
     marginBottom: 15,
   },
@@ -319,7 +320,6 @@ const styles = StyleSheet.create({
   tagTextSelected: {
     color: '#fff',
   },
-  // Стилі для списку
   listContainer: {
     paddingBottom: 20,
   },
@@ -376,7 +376,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#666',
   },
-  // Стилі для тегів у картці тренера
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -394,7 +393,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
-  // Стилі для індикаторів завантаження та пустих результатів
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
