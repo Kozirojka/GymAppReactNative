@@ -32,8 +32,9 @@ const ProfileScreen = ({ navigation }) => {
 
       <View style={styles.buttonContainer}>
         <Button title="Saved Exercise" onPress={() => alert('Saved Exercise')} />
-        <Button title="Renew Subscription" onPress={() => navigation.navigate('Details')} />
+        <Button title="Renew Subscription" onPress={() => navigation.navigate('Subscription')} />
       </View>
+      
 
       <View style={styles.nfcModule}>
         <Text style={styles.nfcText}>NFC Module</Text>
