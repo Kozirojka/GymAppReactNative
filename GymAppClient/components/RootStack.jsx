@@ -7,9 +7,11 @@ import ProfileScreen from './Tabs/Profile/ProfileScreen';
 import BookingScreen from './Tabs/Booking/BookingScreen';
 import KnowledgeLibrary from './Tabs/KnowledgeLibrary/KnowledgeLibrary';
 import DetailsScreen from './Tabs/Home/DetailsScreen'; 
-
+import Subscription from './Tabs/Profile/Subscription';
+import CoachSchedule from './Tabs/Booking/CoachSchedule';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
 
 const HomeStack = () => {
     return (
@@ -26,8 +28,43 @@ const HomeStack = () => {
         />
       </Stack.Navigator>
     );
-  };
-  
+};
+
+const BookingStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen 
+        name="BookingMain" 
+        component={BookingScreen} 
+        options={{ title: "Booking" }} 
+      />
+      <Stack.Screen 
+        name="Schedule" 
+        component={CoachSchedule} 
+        options={{ title: "Schedule" }} 
+      />
+    </Stack.Navigator>
+  );
+};
+
+
+
+const ProfileStackNavigator = () => {
+    return (
+      <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+        <ProfileStack.Screen 
+          name="ProfileMain" 
+          component={ProfileScreen} 
+          options={{ title: "Profile" }} 
+        />
+        <ProfileStack.Screen 
+          name="Subscription" 
+          component={Subscription} 
+          options={{ title: "Subscription" }} 
+        />
+      </ProfileStack.Navigator>
+    );
+};
 
 const MainNavigator = () => {
     return (
@@ -47,12 +84,12 @@ const MainNavigator = () => {
           headerShown: false,
         })}
       >
-        <Tab.Screen name="Booking" component={BookingScreen} />
+        <Tab.Screen name="Booking" component={BookingStack} />
         <Tab.Screen name="Library" component={KnowledgeLibrary} />
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       </Tab.Navigator>
     );
-  };
+};
   
 export default MainNavigator;
