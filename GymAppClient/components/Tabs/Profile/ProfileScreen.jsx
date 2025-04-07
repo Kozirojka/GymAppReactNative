@@ -1,22 +1,91 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Button, StyleSheet } from 'react-native';
+import { 
+  View, 
+  Text, 
+  Image, 
+  Button, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Modal, 
+  TouchableWithoutFeedback 
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const SettingsOverlay = ({ visible, onClose }) => {
+  return (
+    <Modal
+      transparent={true}
+      visible={visible}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.settingsContainer}>
+              <View style={styles.settingsHeader}>
+                <Text style={styles.settingsTitle}>Налаштування</Text>
+                <TouchableOpacity onPress={onClose}>
+                  <Ionicons name="close-outline" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+              
+              <View style={styles.settingsContent}>
+                <TouchableOpacity style={styles.settingsItem}>
+                  <Ionicons name="person-outline" size={24} color="#555" />
+                  <Text style={styles.settingsItemText}>Редагувати профіль</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.settingsItem}>
+                  <Ionicons name="notifications-outline" size={24} color="#555" />
+                  <Text style={styles.settingsItemText}>Сповіщення</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.settingsItem}>
+                  <Ionicons name="shield-outline" size={24} color="#555" />
+                  <Text style={styles.settingsItemText}>Конфіденційність</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.settingsItem}>
+                  <Ionicons name="lock-closed-outline" size={24} color="#555" />
+                  <Text style={styles.settingsItemText}>Змінити пароль</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.settingsItem}>
+                  <Ionicons name="help-circle-outline" size={24} color="#555" />
+                  <Text style={styles.settingsItemText}>Довідка</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={[styles.settingsItem, styles.logoutItem]}>
+                  <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+                  <Text style={[styles.settingsItemText, styles.logoutText]}>Вийти</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+};
 
 const ProfileScreen = ({ navigation }) => {
   const [profileImage, setProfileImage] = useState(null);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   
   useEffect(() => {
-    
-    /*fetch('https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FUser_%2528computing%2529&psig=AOvVaw3fgLnb4val-_24doCQN-za&ust=1744117995351000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLjHlf__xYwDFQAAAAAdAAAAABAE') 
-      .then(response => response.json())
-      .then(data => setProfileImage(data.imageUrl))
-      .catch(error => console.error('Error fetching image:', error));
-    */
-
-      setProfileImage("https://images.unsplash.com/photo-1601071160139-446ba0bc1492")
-    }, []);
+    setProfileImage("https://images.unsplash.com/photo-1601071160139-446ba0bc1492");
+  }, []);
 
   return (
     <View style={styles.screenContainer}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Профіль</Text>
+        <TouchableOpacity onPress={() => setSettingsVisible(true)}>
+          <Ionicons name="settings-outline" size={24} color="#000" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.profileContainer}>
         <Image source={{ uri: profileImage }} style={styles.profileImage} />
         <View style={styles.profileInfo}>
@@ -35,7 +104,6 @@ const ProfileScreen = ({ navigation }) => {
         <Button title="Renew Subscription" onPress={() => navigation.navigate('Subscription')} />
       </View>
       
-
       <View style={styles.nfcModule}>
         <Text style={styles.nfcText}>NFC Module</Text>
         <Image
@@ -44,6 +112,11 @@ const ProfileScreen = ({ navigation }) => {
         />
         <Text style={styles.nfcText}>Use NFC here!</Text>
       </View>
+
+      <SettingsOverlay 
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+      />
     </View>
   );
 };
@@ -52,6 +125,17 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     padding: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingTop: 10,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
   },
   profileContainer: {
     flexDirection: 'row',
@@ -97,6 +181,53 @@ const styles = StyleSheet.create({
   nfcText: {
     fontSize: 16,
     color: '#333',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  settingsContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 30,
+    maxHeight: '70%',
+  },
+  settingsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  settingsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  settingsContent: {
+    paddingHorizontal: 20,
+  },
+  settingsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  settingsItemText: {
+    fontSize: 16,
+    marginLeft: 16,
+    color: '#333',
+  },
+  logoutItem: {
+    borderBottomWidth: 0,
+    marginTop: 20,
+  },
+  logoutText: {
+    color: '#FF3B30',
   },
 });
 
