@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
         height={200}
         autoPlay={true}
         data={mockImages}
-        scrollAnimationDuration={1000}
+        scrollAnimationDuration={3000}
         renderItem={({ item }) => (
           <Image
             source={{ uri: item.uri }}
