@@ -7,7 +7,8 @@ import {
   FlatList, 
   Image, 
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -18,7 +19,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Fitness, Strength Training',
     hourlyRate: 25,
-    rating: 4.8
+    rating: 4.8,
+    tags: ['man', 'fitness', 'strength']
   },
   {
     id: '2',
@@ -26,7 +28,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Boxing, HIIT',
     hourlyRate: 30,
-    rating: 4.9
+    rating: 4.9,
+    tags: ['woman', 'boxing', 'hiit']
   },
   {
     id: '3',
@@ -34,7 +37,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Yoga, Pilates',
     hourlyRate: 20,
-    rating: 4.6
+    rating: 4.6,
+    tags: ['man', 'yoga', 'pilates']
   },
   {
     id: '4',
@@ -42,7 +46,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1541534401786-2077eed87a74?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'CrossFit, Functional Training',
     hourlyRate: 35,
-    rating: 4.7
+    rating: 4.7,
+    tags: ['woman', 'crossfit', 'functional']
   },
   {
     id: '5',
@@ -50,7 +55,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Boxing, Martial Arts',
     hourlyRate: 40,
-    rating: 4.9
+    rating: 4.9,
+    tags: ['man', 'boxing', 'martial']
   },
   {
     id: '6',
@@ -58,7 +64,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Nutrition, Wellness Coaching',
     hourlyRate: 45,
-    rating: 5.0
+    rating: 5.0,
+    tags: ['woman', 'nutrition', 'wellness']
   },
   {
     id: '7',
@@ -66,7 +73,8 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1594381898411-a7fcfad3dda3?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Fitness, Weight Loss',
     hourlyRate: 30,
-    rating: 4.7
+    rating: 4.7,
+    tags: ['man', 'fitness', 'weight']
   },
   {
     id: '8',
@@ -74,23 +82,32 @@ const mockTrainers = [
     image: 'https://images.unsplash.com/photo-1548690312-e3b507d8c110?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
     specialization: 'Yoga, Meditation',
     hourlyRate: 28,
-    rating: 4.8
+    rating: 4.8,
+    tags: ['woman', 'yoga', 'meditation']
   }
 ];
 
-// Симуляція API запиту
-const fetchTrainers = (searchQuery = '') => {
+const allTags = [...new Set(mockTrainers.flatMap(trainer => trainer.tags))];
+
+const fetchTrainers = (searchQuery = '', selectedTags = []) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (searchQuery === '') {
-        resolve(mockTrainers);
-      } else {
-        const filteredTrainers = mockTrainers.filter(trainer => 
+      let filteredTrainers = mockTrainers;
+      
+      if (searchQuery !== '') {
+        filteredTrainers = filteredTrainers.filter(trainer => 
           trainer.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
           trainer.specialization.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        resolve(filteredTrainers);
       }
+      
+      if (selectedTags.length > 0) {
+        filteredTrainers = filteredTrainers.filter(trainer => 
+          selectedTags.some(tag => trainer.tags.includes(tag))
+        );
+      }
+      
+      resolve(filteredTrainers);
     }, 500);
   });
 };
@@ -109,6 +126,13 @@ const TrainerItem = ({ trainer, onPress }) => {
             <Text style={styles.ratingText}>{trainer.rating}</Text>
           </View>
         </View>
+        <View style={styles.tagsContainer}>
+          {trainer.tags.map((tag, index) => (
+            <View key={index} style={styles.tagBadge}>
+              <Text style={styles.tagText}>{tag}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -118,15 +142,16 @@ const BookingScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     loadTrainers();
   }, []);
 
-  const loadTrainers = async (query = '') => {
+  const loadTrainers = async (query = '', tags = selectedTags) => {
     setLoading(true);
     try {
-      const data = await fetchTrainers(query);
+      const data = await fetchTrainers(query, tags);
       setTrainers(data);
     } catch (error) {
       console.error('Помилка завантаження тренерів:', error);
@@ -137,11 +162,21 @@ const BookingScreen = () => {
 
   const handleSearch = (text) => {
     setSearchQuery(text);
-    loadTrainers(text);
+    loadTrainers(text, selectedTags);
+  };
+
+  const handleTagPress = (tag) => {
+    let newSelectedTags;
+    if (selectedTags.includes(tag)) {
+      newSelectedTags = selectedTags.filter(t => t !== tag);
+    } else {
+      newSelectedTags = [...selectedTags, tag];
+    }
+    setSelectedTags(newSelectedTags);
+    loadTrainers(searchQuery, newSelectedTags);
   };
 
   const handleTrainerPress = (trainer) => {
-    // Тут можна додати навігацію до профілю тренера або до екрану бронювання
     alert(`Ви обрали тренера: ${trainer.name}`);
   };
 
@@ -164,6 +199,31 @@ const BookingScreen = () => {
             <Ionicons name="close-circle" size={20} color="#777" />
           </TouchableOpacity>
         )}
+      </View>
+
+      {/* Секція тегів */}
+      <View style={styles.tagsSection}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagsScrollView}>
+          {allTags.map((tag, index) => (
+            <TouchableOpacity 
+              key={index} 
+              style={[
+                styles.tagButton, 
+                selectedTags.includes(tag) ? styles.tagSelected : {}
+              ]}
+              onPress={() => handleTagPress(tag)}
+            >
+              <Text 
+                style={[
+                  styles.tagButtonText, 
+                  selectedTags.includes(tag) ? styles.tagTextSelected : {}
+                ]}
+              >
+                {tag}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       {loading ? (
@@ -214,7 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -232,6 +292,34 @@ const styles = StyleSheet.create({
   clearButton: {
     padding: 5,
   },
+  // Стилі для секції тегів
+  tagsSection: {
+    marginBottom: 15,
+  },
+  tagsScrollView: {
+    flexDirection: 'row',
+  },
+  tagButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  tagSelected: {
+    backgroundColor: '#0066cc',
+    borderColor: '#0066cc',
+  },
+  tagButtonText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  tagTextSelected: {
+    color: '#fff',
+  },
+  // Стилі для списку
   listContainer: {
     paddingBottom: 20,
   },
@@ -288,6 +376,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#666',
   },
+  // Стилі для тегів у картці тренера
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 6,
+  },
+  tagBadge: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginRight: 6,
+    marginTop: 4,
+  },
+  tagText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  // Стилі для індикаторів завантаження та пустих результатів
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
