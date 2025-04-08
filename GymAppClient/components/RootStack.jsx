@@ -4,12 +4,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./Tabs/Home/HomeScreen";
 import ProfileScreen from "./Tabs/Profile/ProfileScreen";
-import BookingScreen from "./Tabs/Booking/BookingScreen";
+import BookingScreen from "./Tabs/Booking/Student/BookingScreen";
 import KnowledgeLibrary from "./Tabs/KnowledgeLibrary/KnowledgeLibrary";
 import DetailsScreen from "./Tabs/Home/DetailsScreen";
 import Subscription from "./Tabs/Profile/Subscription";
-import CoachSchedule from "./Tabs/Booking/CoachSchedule";
+import CoachSchedule from "./Tabs/Booking/Student/CoachSchedule";
 import CoachScheduleOwn from "./Tabs/Booking/Coach/CoachSheduleOwn";
+import IntervalsDetails from "./Tabs/Booking/Coach/IntervalsDetails";
 
 import { useAuth } from "../Context/AuthProvider";
 const Tab = createBottomTabNavigator();
@@ -43,7 +44,9 @@ const BookingStack = () => {
       ) : (
         <Stack.Screen name="BookingMain" component={BookingScreen} />
       )}
+      
       <Stack.Screen name="Schedule" component={CoachSchedule} />
+      <Stack.Screen name="IntervalsDetails" component={IntervalsDetails} />
     </Stack.Navigator>
   );
 };

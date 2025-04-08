@@ -1,40 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   FlatList,
   Dimensions,
-} from 'react-native';
+} from "react-native";
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
-// ⬇️ Мокові дані з userId
 const mockSchedule = [
   {
-    date: '2025-04-08',
+    date: "2025-04-08",
     intervals: [
-      { start: '09:00', end: '10:00', userId: null },
-      { start: '13:00', end: '14:30', userId: 1 },
+      { start: "09:00", end: "10:00", userId: null },
+      { start: "13:00", end: "14:30", userId: 1 },
     ],
   },
   {
-    date: '2025-04-09',
-    intervals: [
-      { start: '10:00', end: '11:00', userId: 2 },
-    ],
+    date: "2025-04-09",
+    intervals: [{ start: "10:00", end: "11:00", userId: 2 }],
   },
   {
-    date: '2025-04-10',
+    date: "2025-04-10",
     intervals: [],
   },
 ];
 
-const CoatchSheduleOwn = () => {
+const CoatchSheduleOwn = ({ navigation }) => {
   const [schedule, setSchedule] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,7 +50,7 @@ const CoatchSheduleOwn = () => {
               ...day,
               intervals: [
                 ...day.intervals,
-                { start: '15:00', end: '16:00', userId: null },
+                { start: "15:00", end: "16:00", userId: null },
               ],
             }
           : day
@@ -63,7 +59,7 @@ const CoatchSheduleOwn = () => {
   };
 
   const getIntervalStyle = (userId) => ({
-    backgroundColor: userId === null ? '#4da6ff' : '#80d4a0',
+    backgroundColor: userId === null ? "#4da6ff" : "#80d4a0",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -76,14 +72,25 @@ const CoatchSheduleOwn = () => {
 
       {item.intervals.length > 0 ? (
         item.intervals.map((interval, i) => (
-          <View key={i} style={getIntervalStyle(interval.userId)}>
+          <TouchableOpacity
+            key={i}
+            style={getIntervalStyle(interval.userId)}
+            onPress={() =>
+              navigation.navigate("IntervalsDetails", {
+                interval,
+                date: item.date,
+              })
+            }
+          >
             <Text style={styles.intervalText}>
               🕒 {interval.start} - {interval.end}
             </Text>
             {interval.userId !== null && (
-              <Text style={styles.assignedText}>👤 Прикріплено: {interval.userId}</Text>
+              <Text style={styles.assignedText}>
+                👤 Прикріплено: {interval.userId}
+              </Text>
             )}
-          </View>
+          </TouchableOpacity>
         ))
       ) : (
         <Text style={styles.noIntervals}>Немає інтервалів</Text>
@@ -103,7 +110,9 @@ const CoatchSheduleOwn = () => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={(e) => {
-          const newIndex = Math.round(e.nativeEvent.contentOffset.x / screenWidth);
+          const newIndex = Math.round(
+            e.nativeEvent.contentOffset.x / screenWidth
+          );
           setCurrentIndex(newIndex);
         }}
       />
@@ -120,63 +129,63 @@ export default CoatchSheduleOwn;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8',
+    backgroundColor: "#f0f4f8",
     paddingTop: 40,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   dayContainer: {
     width: screenWidth - 40,
     marginHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   dateText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 15,
-    color: '#444',
-    textAlign: 'center',
+    color: "#444",
+    textAlign: "center",
   },
   intervalText: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: '500',
+    color: "#fff",
+    fontWeight: "500",
   },
   noIntervals: {
     fontSize: 16,
-    color: '#aaa',
+    color: "#aaa",
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   assignedText: {
     fontSize: 13,
-    color: '#f0f0f0',
+    color: "#f0f0f0",
     marginTop: 4,
   },
   addButton: {
-    backgroundColor: '#00aaff',
+    backgroundColor: "#00aaff",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 20,
     marginBottom: 20,
   },
   addButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
     fontSize: 16,
   },
 });
