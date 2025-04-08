@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import EditAddInterval from "./EditAddInterval";
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-
 const screenWidth = Dimensions.get("window").width;
 
 const mockSchedule = [
@@ -29,102 +29,112 @@ const mockSchedule = [
 ];
 
 const CoatchSheduleOwn = ({ navigation }) => {
-  const [schedule, setSchedule] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setSchedule(mockSchedule);
-    }, 1000);
-  }, []);
-
-  const handleAddInterval = () => {
-    const currentDate = schedule[currentIndex]?.date;
-
-    if (!currentDate) return;
-
-    setSchedule((prev) =>
-      prev.map((day) =>
-        day.date === currentDate
-          ? {
-              ...day,
-              intervals: [
-                ...day.intervals,
-                { start: "15:00", end: "16:00", userId: null },
-              ],
-            }
-          : day
-      )
+    const [schedule, setSchedule] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [overlayVisible, setOverlayVisible] = useState(false);
+  
+    useEffect(() => {
+      setTimeout(() => {
+        setSchedule(mockSchedule);
+      }, 1000);
+    }, []);
+  
+    const handleAddInterval = (newInterval) => {
+      const currentDate = schedule[currentIndex]?.date;
+      if (!currentDate) return;
+  
+      setSchedule((prev) =>
+        prev.map((day) =>
+          day.date === currentDate
+            ? {
+                ...day,
+                intervals: [
+                  ...day.intervals,
+                  {
+                    start: newInterval.start,
+                    end: newInterval.end,
+                    price: newInterval.price || null,
+                  },
+                ],
+              }
+            : day
+        )
+      );
+    };
+  
+    const getIntervalStyle = (userId) => ({
+      backgroundColor: userId === null ? '#4da6ff' : '#80d4a0',
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      marginBottom: 8,
+    });
+  
+    const renderItem = ({ item }) => (
+      <View style={styles.dayContainer}>
+        <Text style={styles.dateText}>{item.date}</Text>
+  
+        {item.intervals.length > 0 ? (
+          item.intervals.map((interval, i) => (
+            <TouchableOpacity
+              key={i}
+              style={getIntervalStyle(interval.userId)}
+              onPress={() =>
+                navigation.navigate('IntervalsDetails', {
+                  interval,
+                  date: item.date,
+                })
+              }
+            >
+              <Text style={styles.intervalText}>
+                🕒 {interval.start} - {interval.end}
+              </Text>
+              {interval.userId !== null && (
+                <Text style={styles.assignedText}>
+                  👤 Прикріплено: {interval.userId}
+                </Text>
+              )}
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Text style={styles.noIntervals}>Немає інтервалів</Text>
+        )}
+      </View>
+    );
+  
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>📅 Розклад тренера</Text>
+  
+        <FlatList
+          data={schedule}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.date}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={(e) => {
+            const newIndex = Math.round(
+              e.nativeEvent.contentOffset.x / screenWidth
+            );
+            setCurrentIndex(newIndex);
+          }}
+        />
+  
+        <TouchableOpacity style={styles.addButton} onPress={() => setOverlayVisible(true)}>
+          <Text style={styles.addButtonText}>➕ Додати інтервал</Text>
+        </TouchableOpacity>
+  
+        <EditAddInterval 
+          visible={overlayVisible} 
+          onClose={() => setOverlayVisible(false)} 
+          onAddInterval={handleAddInterval} 
+        />
+      </View>
     );
   };
-
-  const getIntervalStyle = (userId) => ({
-    backgroundColor: userId === null ? "#4da6ff" : "#80d4a0",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 8,
-  });
-
-  const renderItem = ({ item, index }) => (
-    <View style={styles.dayContainer}>
-      <Text style={styles.dateText}>{item.date}</Text>
-
-      {item.intervals.length > 0 ? (
-        item.intervals.map((interval, i) => (
-          <TouchableOpacity
-            key={i}
-            style={getIntervalStyle(interval.userId)}
-            onPress={() =>
-              navigation.navigate("IntervalsDetails", {
-                interval,
-                date: item.date,
-              })
-            }
-          >
-            <Text style={styles.intervalText}>
-              🕒 {interval.start} - {interval.end}
-            </Text>
-            {interval.userId !== null && (
-              <Text style={styles.assignedText}>
-                👤 Прикріплено: {interval.userId}
-              </Text>
-            )}
-          </TouchableOpacity>
-        ))
-      ) : (
-        <Text style={styles.noIntervals}>Немає інтервалів</Text>
-      )}
-    </View>
-  );
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>📅 Розклад тренера</Text>
-
-      <FlatList
-        data={schedule}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.date}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={(e) => {
-          const newIndex = Math.round(
-            e.nativeEvent.contentOffset.x / screenWidth
-          );
-          setCurrentIndex(newIndex);
-        }}
-      />
-
-      <TouchableOpacity style={styles.addButton} onPress={handleAddInterval}>
-        <Text style={styles.addButtonText}>➕ Додати інтервал</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-export default CoatchSheduleOwn;
+  
+  export default CoatchSheduleOwn;
 
 const styles = StyleSheet.create({
   container: {
