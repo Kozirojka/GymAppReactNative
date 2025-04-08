@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
 //820
-
+// цей скрін потрінбий у тому випадку коли користувач нажме на кнопку "Schedule" у BookingScreen
 const CoachSchedule = ({navigation}) => {
 
     return (
