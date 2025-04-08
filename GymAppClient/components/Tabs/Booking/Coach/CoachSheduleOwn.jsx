@@ -11,18 +11,19 @@ import {
 
 const screenWidth = Dimensions.get('window').width;
 
+// ⬇️ Мокові дані з userId
 const mockSchedule = [
   {
     date: '2025-04-08',
     intervals: [
-      { start: '09:00', end: '10:00' },
-      { start: '13:00', end: '14:30' },
+      { start: '09:00', end: '10:00', userId: null },
+      { start: '13:00', end: '14:30', userId: 1 },
     ],
   },
   {
     date: '2025-04-09',
     intervals: [
-      { start: '10:00', end: '11:00' },
+      { start: '10:00', end: '11:00', userId: 2 },
     ],
   },
   {
@@ -33,6 +34,7 @@ const mockSchedule = [
 
 const CoatchSheduleOwn = () => {
   const [schedule, setSchedule] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0); 
 
   useEffect(() => {
     setTimeout(() => {
@@ -40,45 +42,59 @@ const CoatchSheduleOwn = () => {
     }, 1000);
   }, []);
 
-  const handleAddInterval = (date) => {
-    Alert.alert('Додати інтервал', `Для дати ${date}`, [{ text: 'Ок' }]);
+  const handleAddInterval = () => {
+    const currentDate = schedule[currentIndex]?.date;
+
+    if (!currentDate) return;
 
     setSchedule((prev) =>
       prev.map((day) =>
-        day.date === date
+        day.date === currentDate
           ? {
               ...day,
-              intervals: [...day.intervals, { start: '15:00', end: '16:00' }],
+              intervals: [
+                ...day.intervals,
+                { start: '15:00', end: '16:00', userId: null },
+              ],
             }
           : day
       )
     );
   };
 
-  const renderItem = ({ item }) => (
+  const getIntervalStyle = (userId) => ({
+    backgroundColor: userId === null ? '#4da6ff' : '#80d4a0',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  });
+
+  const renderItem = ({ item, index }) => (
     <View style={styles.dayContainer}>
       <Text style={styles.dateText}>{item.date}</Text>
+
       {item.intervals.length > 0 ? (
         item.intervals.map((interval, i) => (
-          <Text key={i} style={styles.intervalText}>
-            🕒 {interval.start} - {interval.end}
-          </Text>
+          <View key={i} style={getIntervalStyle(interval.userId)}>
+            <Text style={styles.intervalText}>
+              🕒 {interval.start} - {interval.end}
+            </Text>
+            {interval.userId !== null && (
+              <Text style={styles.assignedText}>👤 Прикріплено: {interval.userId}</Text>
+            )}
+          </View>
         ))
       ) : (
         <Text style={styles.noIntervals}>Немає інтервалів</Text>
       )}
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => handleAddInterval(item.date)}
-      >
-        <Text style={styles.addButtonText}>➕ Додати інтервал</Text>
-      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>📅 Розклад тренера</Text>
+
       <FlatList
         data={schedule}
         renderItem={renderItem}
@@ -86,7 +102,15 @@ const CoatchSheduleOwn = () => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(e) => {
+          const newIndex = Math.round(e.nativeEvent.contentOffset.x / screenWidth);
+          setCurrentIndex(newIndex);
+        }}
       />
+
+      <TouchableOpacity style={styles.addButton} onPress={handleAddInterval}>
+        <Text style={styles.addButtonText}>➕ Додати інтервал</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -116,34 +140,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   dateText: {
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 15,
     color: '#444',
+    textAlign: 'center',
   },
   intervalText: {
     fontSize: 16,
-    color: '#333',
-    marginBottom: 8,
+    color: '#fff',
+    fontWeight: '500',
   },
   noIntervals: {
     fontSize: 16,
     color: '#aaa',
     marginBottom: 15,
+    textAlign: 'center',
+  },
+  assignedText: {
+    fontSize: 13,
+    color: '#f0f0f0',
+    marginTop: 4,
   },
   addButton: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     backgroundColor: '#00aaff',
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 20,
   },
   addButtonText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 16,
   },
 });
