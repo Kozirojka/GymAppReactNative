@@ -2,7 +2,11 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
 //820
+<<<<<<< HEAD:GymAppClient/components/Tabs/Booking/CoachSchedule.jsx
 
+=======
+// цей скрін потрінбий у тому випадку коли користувач нажме на кнопку "Schedule" у BookingScreen
+>>>>>>> 3d7431d54f6ba61bdfcc10278bb6e67adff7a1ea:GymAppClient/components/Tabs/Booking/Student/CoachSchedule.jsx
 const CoachSchedule = ({navigation}) => {
 
     return (
