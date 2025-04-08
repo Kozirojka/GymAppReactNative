@@ -5,6 +5,8 @@ import {
   StyleSheet
 } from 'react-native';
 
+// це є деталі про інтервал. цей екран відкривається
+//  коли користувач натискає на інтервал у списку
 const IntervalsDetails = ({ route }) => {
     const { interval: { start, end }, date } = route.params;
   

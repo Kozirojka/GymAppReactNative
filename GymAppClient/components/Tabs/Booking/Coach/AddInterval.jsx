@@ -8,7 +8,9 @@ import {
   StyleSheet 
 } from 'react-native';
 
-const EditAddInterval = ({ visible, onClose, onAddInterval }) => {
+
+// створеня інтервалу для тренера. це є модульне вікно яке випливає знизу
+const AddInterval = ({ visible, onClose, onAddInterval }) => {
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [price, setPrice] = useState('');
@@ -99,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditAddInterval;
+export default AddInterval;

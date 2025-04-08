@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import EditAddInterval from "./EditAddInterval";
+import AddInterval from "./AddInterval";
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ const mockSchedule = [
     },
   ];
   
-
+// це є особиста сторінка тренера де він може корегувати свій розкалд
 const CoatchSheduleOwn = ({ navigation }) => {
     const [schedule, setSchedule] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -128,7 +128,7 @@ const CoatchSheduleOwn = ({ navigation }) => {
           <Text style={styles.addButtonText}>➕ Додати інтервал</Text>
         </TouchableOpacity>
   
-        <EditAddInterval 
+        <AddInterval 
           visible={overlayVisible} 
           onClose={() => setOverlayVisible(false)} 
           onAddInterval={handleAddInterval} 
