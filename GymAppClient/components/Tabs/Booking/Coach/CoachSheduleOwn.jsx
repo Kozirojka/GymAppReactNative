@@ -11,22 +11,23 @@ import {
 const screenWidth = Dimensions.get("window").width;
 
 const mockSchedule = [
-  {
-    date: "2025-04-08",
-    intervals: [
-      { start: "09:00", end: "10:00", userId: null },
-      { start: "13:00", end: "14:30", userId: 1 },
-    ],
-  },
-  {
-    date: "2025-04-09",
-    intervals: [{ start: "10:00", end: "11:00", userId: 2 }],
-  },
-  {
-    date: "2025-04-10",
-    intervals: [],
-  },
-];
+    {
+      date: "2025-04-08",
+      intervals: [
+        { start: "09:00", end: "10:00", users: [] },
+        { start: "13:00", end: "14:30", users: [1, 2] },
+      ],
+    },
+    {
+      date: "2025-04-09",
+      intervals: [{ start: "10:00", end: "11:00", users: [4] }],
+    },
+    {
+      date: "2025-04-10",
+      intervals: [],
+    },
+  ];
+  
 
 const CoatchSheduleOwn = ({ navigation }) => {
     const [schedule, setSchedule] = useState([]);
@@ -40,67 +41,69 @@ const CoatchSheduleOwn = ({ navigation }) => {
     }, []);
   
     const handleAddInterval = (newInterval) => {
-      const currentDate = schedule[currentIndex]?.date;
-      if (!currentDate) return;
+        const currentDate = schedule[currentIndex]?.date;
+        if (!currentDate) return;
+      
+        setSchedule((prev) =>
+          prev.map((day) =>
+            day.date === currentDate
+              ? {
+                  ...day,
+                  intervals: [
+                    ...day.intervals,
+                    {
+                      start: newInterval.start,
+                      end: newInterval.end,
+                      price: newInterval.price || null,
+                      users: [], 
+                    },
+                  ],
+                }
+              : day
+          )
+        );
+      };
+      
   
-      setSchedule((prev) =>
-        prev.map((day) =>
-          day.date === currentDate
-            ? {
-                ...day,
-                intervals: [
-                  ...day.intervals,
-                  {
-                    start: newInterval.start,
-                    end: newInterval.end,
-                    price: newInterval.price || null,
-                  },
-                ],
-              }
-            : day
-        )
-      );
-    };
+    const getIntervalStyle = (users) => ({
+        backgroundColor: users.length === 0 ? '#4da6ff' : '#80d4a0',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        marginBottom: 8,
+      });
   
-    const getIntervalStyle = (userId) => ({
-      backgroundColor: userId === null ? '#4da6ff' : '#80d4a0',
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-      borderRadius: 8,
-      marginBottom: 8,
-    });
-  
-    const renderItem = ({ item }) => (
-      <View style={styles.dayContainer}>
-        <Text style={styles.dateText}>{item.date}</Text>
-  
-        {item.intervals.length > 0 ? (
-          item.intervals.map((interval, i) => (
-            <TouchableOpacity
-              key={i}
-              style={getIntervalStyle(interval.userId)}
-              onPress={() =>
-                navigation.navigate('IntervalsDetails', {
-                  interval,
-                  date: item.date,
-                })
-              }
-            >
-              <Text style={styles.intervalText}>
-                🕒 {interval.start} - {interval.end}
-              </Text>
-              {interval.userId !== null && (
-                <Text style={styles.assignedText}>
-                  👤 Прикріплено: {interval.userId}
+      const renderItem = ({ item }) => (
+        <View style={styles.dayContainer}>
+          <Text style={styles.dateText}>{item.date}</Text>
+      
+          {item.intervals.length > 0 ? (
+            item.intervals.map((interval, i) => (
+              <TouchableOpacity
+                key={i}
+                style={getIntervalStyle(interval.users)}
+                onPress={() =>
+                  navigation.navigate('IntervalsDetails', {
+                    interval,
+                    date: item.date,
+                  })
+                }
+              >
+                <Text style={styles.intervalText}>
+                  🕒 {interval.start} - {interval.end}
                 </Text>
-              )}
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noIntervals}>Немає інтервалів</Text>
-        )}
-      </View>
-    );
+                {interval.users.length > 0 && (
+                  <Text style={styles.assignedText}>
+                    👥 Прикріплено: {interval.users.join(', ')}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noIntervals}>Немає інтервалів</Text>
+          )}
+        </View>
+      );
   
     return (
       <View style={styles.container}>

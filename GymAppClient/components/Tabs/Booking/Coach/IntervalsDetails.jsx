@@ -5,16 +5,20 @@ import {
   StyleSheet
 } from 'react-native';
 
-const IntervalsDetails = () => {
-    return(
-        <View style={styles.container}>
-            <Text style={styles.title}>Intervals Details</Text>
-            <Text style={styles.text}>Details about the selected intervals will be displayed here.</Text>
-        </View>
-    )
-};
-
-export default IntervalsDetails;
+const IntervalsDetails = ({ route }) => {
+    const { interval: { start, end }, date } = route.params;
+  
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>📅 Деталі Інтервалу</Text>
+        <Text style={styles.text}>Дата: {date}</Text>
+        <Text style={styles.text}>Початок: {start}</Text>
+        <Text style={styles.text}>Кінець: {end}</Text>
+      </View>
+    );
+  };
+  
+  export default IntervalsDetails;
 
 const styles = StyleSheet.create({
   container: {
