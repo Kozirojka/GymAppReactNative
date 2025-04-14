@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-// цей скрін потрінбий у тому випадку коли користувач нажме на кнопку "Schedule" у BookingScreen
 const CoachScheduleDetail = ({navigation}) => {
 
     return (

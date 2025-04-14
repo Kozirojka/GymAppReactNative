@@ -203,7 +203,6 @@ const BookingScreen = ({navigation}) => {
         )}
       </View>
 
-      {/* Секція тегів */}
       <View style={styles.tagsSection}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagsScrollView}>
           {allTags.map((tag, index) => (
