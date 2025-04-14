@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  Image, 
-  Button, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Modal, 
-  TouchableWithoutFeedback 
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const SettingsOverlay = ({ visible, onClose }) => {
+const SettingsOverlay = ({ visible, onClose, navigation }) => {
   return (
     <Modal
       transparent={true}
@@ -29,36 +29,52 @@ const SettingsOverlay = ({ visible, onClose }) => {
                   <Ionicons name="close-outline" size={24} color="#000" />
                 </TouchableOpacity>
               </View>
-              
+
               <View style={styles.settingsContent}>
-                <TouchableOpacity style={styles.settingsItem}>
+                <TouchableOpacity
+                  style={styles.settingsItem}
+                  onPress={() => {
+                    onClose();
+                    navigation.navigate("EditProfile");
+                  }}
+                >
                   <Ionicons name="person-outline" size={24} color="#555" />
-                  <Text style={styles.settingsItemText}>Редагувати профіль</Text>
+                  <Text style={styles.settingsItemText}>
+                    Редагувати профіль
+                  </Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity style={styles.settingsItem}>
-                  <Ionicons name="notifications-outline" size={24} color="#555" />
+                  <Ionicons
+                    name="notifications-outline"
+                    size={24}
+                    color="#555"
+                  />
                   <Text style={styles.settingsItemText}>Сповіщення</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity style={styles.settingsItem}>
                   <Ionicons name="shield-outline" size={24} color="#555" />
                   <Text style={styles.settingsItemText}>Конфіденційність</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity style={styles.settingsItem}>
                   <Ionicons name="lock-closed-outline" size={24} color="#555" />
                   <Text style={styles.settingsItemText}>Змінити пароль</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity style={styles.settingsItem}>
                   <Ionicons name="help-circle-outline" size={24} color="#555" />
                   <Text style={styles.settingsItemText}>Довідка</Text>
                 </TouchableOpacity>
-                
-                <TouchableOpacity style={[styles.settingsItem, styles.logoutItem]}>
+
+                <TouchableOpacity
+                  style={[styles.settingsItem, styles.logoutItem]}
+                >
                   <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
-                  <Text style={[styles.settingsItemText, styles.logoutText]}>Вийти</Text>
+                  <Text style={[styles.settingsItemText, styles.logoutText]}>
+                    Вийти
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -72,9 +88,11 @@ const SettingsOverlay = ({ visible, onClose }) => {
 const ProfileScreen = ({ navigation }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
-  
+
   useEffect(() => {
-    setProfileImage("https://images.unsplash.com/photo-1601071160139-446ba0bc1492");
+    setProfileImage(
+      "https://images.unsplash.com/photo-1601071160139-446ba0bc1492"
+    );
   }, []);
 
   return (
@@ -93,29 +111,34 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.subscription}>
             Subscription Start: Jan 1, 2025
           </Text>
-          <Text style={styles.subscription}>
-            Subscription End: Jan 1, 2026
-          </Text>
+          <Text style={styles.subscription}>Subscription End: Jan 1, 2026</Text>
         </View>
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button title="Saved Exercise" onPress={() => alert('Saved Exercise')} />
-        <Button title="Renew Subscription" onPress={() => navigation.navigate('Subscription')} />
+        <Button
+          title="Saved Exercise"
+          onPress={() => alert("Saved Exercise")}
+        />
+        <Button
+          title="Renew Subscription"
+          onPress={() => navigation.navigate("Subscription")}
+        />
       </View>
-      
+
       <View style={styles.nfcModule}>
         <Text style={styles.nfcText}>NFC Module</Text>
         <Image
-          source={{ uri: 'https://example.com/nfc-image.png' }} 
+          source={{ uri: "https://example.com/nfc-image.png" }}
           style={styles.nfcImage}
         />
         <Text style={styles.nfcText}>Use NFC here!</Text>
       </View>
 
-      <SettingsOverlay 
+      <SettingsOverlay
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
+        navigation={navigation}
       />
     </View>
   );
@@ -127,22 +150,22 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
     paddingTop: 10,
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
     paddingBottom: 10,
   },
   profileImage: {
@@ -156,21 +179,21 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subscription: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginBottom: 20,
   },
   nfcModule: {
-    alignItems: 'center',
+    alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    borderTopColor: "#ccc",
     paddingTop: 20,
   },
   nfcImage: {
@@ -180,54 +203,54 @@ const styles = StyleSheet.create({
   },
   nfcText: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
   },
   settingsContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 30,
-    maxHeight: '70%',
+    maxHeight: "70%",
   },
   settingsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   settingsTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   settingsContent: {
     paddingHorizontal: 20,
   },
   settingsItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   settingsItemText: {
     fontSize: 16,
     marginLeft: 16,
-    color: '#333',
+    color: "#333",
   },
   logoutItem: {
     borderBottomWidth: 0,
     marginTop: 20,
   },
   logoutText: {
-    color: '#FF3B30',
+    color: "#FF3B30",
   },
 });
 

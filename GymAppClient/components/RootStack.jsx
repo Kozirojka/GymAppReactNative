@@ -13,7 +13,7 @@ import CoachScheduleDetail from "./Tabs/Booking/Student/CoachScheduleDetail";
 import CoachScheduleOwn from "./Tabs/Booking/Coach/CoachSheduleOwn";
 import IntervalsDetails from "./Tabs/Booking/Coach/IntervalsDetails";
 import ExcerciseDetails from "./Tabs/KnowledgeLibrary/ExerciseDetails";
-
+import EditProfile from "./Tabs/Profile/EditProfile";
 
 import { useAuth } from "../Context/AuthProvider";
 const Tab = createBottomTabNavigator();
@@ -66,6 +66,11 @@ const ProfileStackNavigator = () => {
         name="Subscription"
         component={Subscription}
         options={{ title: "Subscription" }}
+      />
+      <ProfileStack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ title: "EditProfile" }}
       />
     </ProfileStack.Navigator>
   );
