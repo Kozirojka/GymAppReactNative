@@ -1,3 +1,4 @@
+using System.Reflection;
 using gymServer.Api.Extensions;
 using gymServer.Domain;
 using gymServer.Infrastructure;
@@ -8,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerWithJwtSupport();
