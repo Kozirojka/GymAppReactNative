@@ -9,21 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b4912bd-e70b-4a74-abbc-f4fbcd1dfa12" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.medicCW.Sol/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.medicCW.Sol/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.medicCW.Sol/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/Extensions/AuthenticationExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/Extensions/AuthenticationExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/Extensions/SwaggerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/Extensions/SwaggerExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/medicCW.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/gymServer.Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Api/medicCW.Api.http" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Api/medicCW.Api.http" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Application/medicCW.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Application/gymServer.Application.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Domain/medicCW.Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Domain/gymServer.Domain.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Infrastructure/medicCW.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Infrastructure/gymServer.Infrastructure.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medicCW.Sol.sln" beforeDir="false" afterPath="$PROJECT_DIR$/gymServer.Sol.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.medicCW.Sol/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.medicCW.Sol/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="main" />
+        <entry key="$PROJECT_DIR$/.." value="feature/backend" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -47,12 +33,12 @@
     &quot;assignee&quot;: &quot;Kozirojka&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Kozirojka/GymAppReactNative.git",
-    "accountId": "e7c58e0f-d028-4bb9-b873-71507a112266"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Kozirojka/GymAppReactNative.git&quot;,
+    &quot;accountId&quot;: &quot;e7c58e0f-d028-4bb9-b873-71507a112266&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b741f17422844062bda644589ab84b32337fefcb677bc51957a62c3df8ad4d/AuthorizationAppBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://D:/development/course_work_parralel/backend/medicCW.Sol/medicCW.Api/Program.cs" root0="SKIP_HIGHLIGHTING" />
@@ -80,12 +66,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    ".NET Launch Settings Profile.gymServer.Api.executor": "Run",
     ".NET Launch Settings Profile.medicCW.Api: http.executor": "Run",
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "feature/backend",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -157,7 +144,7 @@
       <updated>1744625370228</updated>
       <workItem from="1744625374515" duration="8999000" />
       <workItem from="1744643397549" duration="11000" />
-      <workItem from="1744643439673" duration="336000" />
+      <workItem from="1744643439673" duration="876000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit for backend">
       <option name="closed" value="true" />
@@ -167,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744628891027</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="succesfully update the backend">
+      <option name="closed" value="true" />
+      <created>1744643941694</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744643941695</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,7 +184,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="initial commit for backend" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit for backend" />
+    <MESSAGE value="succesfully update the backend" />
+    <option name="LAST_COMMIT_MESSAGE" value="succesfully update the backend" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
