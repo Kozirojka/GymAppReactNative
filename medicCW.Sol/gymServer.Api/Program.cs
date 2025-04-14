@@ -1,5 +1,6 @@
 using System.Reflection;
 using gymServer.Api.Extensions;
+using gymServer.Application.Login.Command;
 using gymServer.Domain;
 using gymServer.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));  // Це автоматично зареєструє всі обробники в поточній збірці
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
 
-
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerWithJwtSupport();

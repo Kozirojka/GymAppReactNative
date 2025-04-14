@@ -11,8 +11,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-    
-    
+
+
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<StudentProfile> StudentProfiles { get; set; }
@@ -24,7 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 
         builder.Entity<Contribution>()
-            .HasOne<ApplicationUser>()  
+            .HasOne<ApplicationUser>()
             .WithMany(u => u.Contributions)
             .HasForeignKey(c => c.UserId)
             .IsRequired()
