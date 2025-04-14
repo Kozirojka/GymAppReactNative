@@ -1,4 +1,4 @@
-using medicCW.Api.Extensions;
+using gymServer.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
