@@ -40,7 +40,7 @@ const HomeStack = () => {
 const BookingStack = () => {
   const role = useAuth() || "coach"; 
   
-  return (
+  return (  
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {role === "coach" ? (
         <Stack.Screen name="CoachOwn" component={CoachScheduleOwn} />

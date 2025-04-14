@@ -14,7 +14,7 @@ const mockImages = [
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState(null); 
   const [loading, setLoading] = useState(false); 
-  const apiUrl = "http://localhost:5132/api/apple"; 
+  const apiUrl = "http://localhost:5249/weatherforecast"; 
 
   const fetchData = async () => {
     setLoading(true);
