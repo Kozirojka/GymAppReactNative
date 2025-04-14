@@ -1,4 +1,4 @@
-namespace medicCW.Api.Extensions;
+namespace gymServer.Api.Extensions;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;

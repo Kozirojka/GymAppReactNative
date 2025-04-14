@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace medicCW.Api.Extensions;
+namespace gymServer.Api.Extensions;
 
 public static class AuthenticationExtensions
 {
