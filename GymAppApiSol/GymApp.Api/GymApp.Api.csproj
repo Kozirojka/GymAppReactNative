@@ -27,10 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Endpoints\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GymApp.Infrastrucure\GymApp.Infrastrucure.csproj" />
     </ItemGroup>
 

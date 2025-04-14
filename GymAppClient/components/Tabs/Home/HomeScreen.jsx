@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import Contributions from './Contributions';
 import Carousel from 'react-native-reanimated-carousel';
-
+import Pins from './Pins';
 const PAGE_WIDTH = Dimensions.get('window').width;
 
 const mockImages = [
@@ -12,10 +12,52 @@ const mockImages = [
 ];
 
 const HomeScreen = ({ navigation }) => {
+  const [data, setData] = useState(null); 
+  const [loading, setLoading] = useState(false); 
+  const apiUrl = "http://localhost:5132/api/apple"; 
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(apiUrl);
+      
+      console.log('Response:', response); 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const text = await response.text();
+  
+      if (!text) {
+        throw new Error('Empty response body');
+      }
+  
+      const data = JSON.parse(text);
+      setData(data);
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching data:', error.message || error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.screenContainer}>
       <Text style={styles.title}>🏠 Home Screen</Text>
       <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
+
+      <Button 
+        title="Fetch Data" 
+        onPress={fetchData} 
+        disabled={loading} 
+      />
+
+      {loading ? (
+        <Text>Loading...</Text> 
+      ) : (
+        data && <Text>{JSON.stringify(data)}</Text> 
+      )}
 
       <Text style={styles.subTitle}>🖼 Галерея з залу</Text>
       <Carousel
@@ -33,6 +75,7 @@ const HomeScreen = ({ navigation }) => {
         )}
       />
 
+      <Pins/>
       <View style={{ height: 30 }} />
       <Contributions />
     </ScrollView>
