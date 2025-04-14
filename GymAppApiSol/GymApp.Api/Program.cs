@@ -17,6 +17,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("DbPostgres"));
 });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()  
+            .AllowAnyMethod()   
+            .AllowAnyHeader(); 
+    });
+});
+
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.Configure<JwtOptions>(
@@ -44,9 +56,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors("AllowAll");
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.RegisterAllEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();

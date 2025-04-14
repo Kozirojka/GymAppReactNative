@@ -12,6 +12,8 @@ import Subscription from "./Tabs/Profile/Subscription";
 import CoachScheduleDetail from "./Tabs/Booking/Student/CoachScheduleDetail";
 import CoachScheduleOwn from "./Tabs/Booking/Coach/CoachSheduleOwn";
 import IntervalsDetails from "./Tabs/Booking/Coach/IntervalsDetails";
+import ExcerciseDetails from "./Tabs/KnowledgeLibrary/ExerciseDetails";
+
 
 import { useAuth } from "../Context/AuthProvider";
 const Tab = createBottomTabNavigator();
@@ -69,6 +71,23 @@ const ProfileStackNavigator = () => {
   );
 };
 
+
+const KnowledgeLibraryStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="KnowledgeLibraryMain"
+        component={KnowledgeLibrary}
+        options={{ title: "Home" }}
+      />
+      <Stack.Screen
+        name="ExerciseDetails"
+        component={ExcerciseDetails}
+        options={{ title: "ExerciseDetails" }}
+      />
+    </Stack.Navigator>
+  );
+};
 const MainNavigator = () => {
   return (
     <Tab.Navigator
@@ -88,7 +107,7 @@ const MainNavigator = () => {
       })}
     >
       <Tab.Screen name="Booking" component={BookingStack} />
-      <Tab.Screen name="Library" component={KnowledgeLibrary} />
+      <Tab.Screen name="Library" component={KnowledgeLibraryStack} />
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>
