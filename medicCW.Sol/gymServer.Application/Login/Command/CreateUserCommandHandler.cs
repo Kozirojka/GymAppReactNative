@@ -6,34 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace gymServer.Application.Login.Command;
 
-public class CreateUserCommand : IRequest<AuthResult>
-{
-    public CreateUserCommand(RegisterUserRequest driverRequest)
-    {
-        DriverRequest = driverRequest;
-    }
-
-    public RegisterUserRequest DriverRequest { get; set; }
-    
-}
-
-public class AuthResult
-{
-    public bool Succeeded { get; set; }
-    public string Error { get; set; }
-    public AuthResponseDto Response { get; set; }
-}
-
-public class AuthResponseDto
-{
-    public string Token { get; set; }
-    public string UserId { get; set; }
-    public string Email { get; set; }
-    public string Role { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-}
-
+public record CreateUserCommand(RegisterUserRequest DriverRequest) : IRequest<AuthResult>;
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthResult>
 {

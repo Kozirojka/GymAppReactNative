@@ -3,6 +3,7 @@ using gymServer.Api.Extensions;
 using gymServer.Application.Login.Command;
 using gymServer.Domain;
 using gymServer.Infrastructure;
+using gymServer.Infrastructure.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,9 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerWithJwtSupport();
 builder.Services.AddJwtAuthentication(builder.Configuration);
-    
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddCors(options =>
 {

@@ -2,8 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using gymServer.Domain;
+using gymServer.Infrastructure.Settings;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace gymServer.Application.Login.Command;
@@ -16,16 +18,15 @@ public record GenerateAccessTokenCommand : IRequest<string>
 }
 
 
-
-
 public class GenerateAccessTokenCommandHandler : IRequestHandler<GenerateAccessTokenCommand, string>
 {
-    private readonly IConfiguration _configuration;
-
-    public GenerateAccessTokenCommandHandler(IConfiguration configuration)
+    private readonly JwtSettings _jwtSettings;
+    
+    public GenerateAccessTokenCommandHandler(IOptions<JwtSettings> jwtOptions)
     {
-        _configuration = configuration;
+        _jwtSettings = jwtOptions.Value;
     }
+
 
     public async Task<string> Handle(GenerateAccessTokenCommand request, CancellationToken cancellationToken)
     {
@@ -39,16 +40,16 @@ public class GenerateAccessTokenCommandHandler : IRequestHandler<GenerateAccessT
             new Claim("LastName", request.User.LastName)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddHours(10),
+            Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpiryHours),
             SigningCredentials = creds,
-            Issuer = _configuration["JWT:Issuer"],
-            Audience = _configuration["JWT:Audience"]
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
