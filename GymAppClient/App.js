@@ -1,11 +1,13 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import MainNavigator from './components/RootStack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppNavigator from '../GymAppClient/components/RootStack';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MainNavigator />
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <StatusBar style="auto" />
+      <AppNavigator />
+    </SafeAreaProvider>
   );
 }

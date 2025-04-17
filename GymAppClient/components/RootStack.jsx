@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useMemo, createContext, useContext } from "react";
+import { Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -20,7 +21,6 @@ import EditProfile from "./Tabs/Profile/EditProfile";
 
 import SignInScreen from "./Tabs/Auth/SignInScreen";
 import SignUpScreen from "./Tabs/Auth/SignUpScreen";
-import SplashScreen from "./Tabs/Auth/SplashScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -242,7 +242,7 @@ const AppNavigator = () => {
   }), [state.userToken, state.userRole]);
 
   if (state.isLoading) {
-    return <SplashScreen />;
+    <Text>Hello</Text>
   }
 
   return (

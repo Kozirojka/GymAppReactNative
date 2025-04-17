@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert 
 } from 'react-native';
-import { useAuth } from '../../../Context/AuthProvider';
+import { useAuth } from '../../RootStack';
 
 const API_URL = 'http://localhost:5249/login'; 
 
