@@ -44,7 +44,7 @@ const SignInScreen = ({ navigation }) => {
       if (!response.ok) {
         throw new Error(data.message || 'Помилка автентифікації');
       }
-
+      console.log('Login response:', data);
       await signIn(data);
     } catch (error) {
       Alert.alert('Помилка', error.message || 'Сталася помилка під час входу');

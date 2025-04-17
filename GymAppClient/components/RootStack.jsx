@@ -1,4 +1,11 @@
-import React, { useEffect, useReducer, useMemo, createContext, useContext } from "react";
+import React, {
+  useEffect,
+  useReducer,
+  useMemo,
+  createContext,
+  useContext,
+  use,
+} from "react";
 import { Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -22,43 +29,12 @@ import EditProfile from "./Tabs/Profile/EditProfile";
 import SignInScreen from "./Tabs/Auth/SignInScreen";
 import SignUpScreen from "./Tabs/Auth/SignUpScreen";
 
+import { getUserRoleFromJwt } from "../utils/decodeJwt";
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
-
-export const AuthContext = createContext();
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-
-const authReducer = (prevState, action) => {
-  switch (action.type) {
-    case 'RESTORE_TOKEN':
-      return {
-        ...prevState,
-        userToken: action.token,
-        userRole: action.userRole,
-        isLoading: false,
-      };
-    case 'SIGN_IN':
-      return {
-        ...prevState,
-        isSignout: false,
-        userToken: action.token,
-        userRole: action.userRole,
-      };
-    case 'SIGN_OUT':
-      return {
-        ...prevState,
-        isSignout: true,
-        userToken: null,
-        userRole: null,
-      };
-  }
-};
 
 const HomeStack = () => {
   return (
@@ -79,15 +55,15 @@ const HomeStack = () => {
 
 const BookingStack = () => {
   const { userRole } = useAuth();
-  
-  return (  
+
+  return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {userRole === "Coach" ? (
         <Stack.Screen name="CoachOwn" component={CoachScheduleOwn} />
       ) : (
         <Stack.Screen name="BookingMain" component={BookingScreen} />
       )}
-      
+
       <Stack.Screen name="Schedule" component={CoachScheduleDetail} />
       <Stack.Screen name="IntervalsDetails" component={IntervalsDetails} />
     </Stack.Navigator>
@@ -168,6 +144,38 @@ const AuthStackNavigator = () => {
   );
 };
 
+export const AuthContext = createContext();
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+const authReducer = (prevState, action) => {
+  switch (action.type) {
+    case "RESTORE_TOKEN":
+      return {
+        ...prevState,
+        userToken: action.token,
+        userRole: action.userRole,
+        isLoading: false,
+      };
+    case "SIGN_IN":
+      return {
+        ...prevState,
+        isSignout: false,
+        userToken: action.token,
+        userRole: action.userRole,
+      };
+    case "SIGN_OUT":
+      return {
+        ...prevState,
+        isSignout: true,
+        userToken: null,
+        userRole: null,
+      };
+  }
+};
+
 const AppNavigator = () => {
   const [state, dispatch] = useReducer(authReducer, {
     isLoading: true,
@@ -178,10 +186,14 @@ const AppNavigator = () => {
 
   const decodeToken = (token) => {
     try {
-      const decoded = jwt_decode(token);
+      console.log("here is token: ", token);
+      const role = getUserRoleFromJwt(token);
+
+      console.log(role);
+      console.log(decoded);
       return {
         token,
-        role: decoded.role,
+        role: role,
       };
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -193,66 +205,66 @@ const AppNavigator = () => {
     const bootstrapAsync = async () => {
       let userToken;
       try {
-        userToken = await AsyncStorage.getItem('userToken');
-        
+        userToken = await AsyncStorage.getItem("userToken");
+
+        console.log("Hello bitch", userToken);
         if (userToken) {
-          const { role } = decodeToken(userToken);
-          dispatch({ type: 'RESTORE_TOKEN', token: userToken, userRole: role });
+          const role = decodeToken(userToken);
+          dispatch({ type: "RESTORE_TOKEN", token: userToken, userRole: role });
         } else {
-          dispatch({ type: 'RESTORE_TOKEN', token: null, userRole: null });
+          dispatch({ type: "RESTORE_TOKEN", token: null, userRole: null });
         }
       } catch (e) {
         console.error("Failed to get token from storage:", e);
-        dispatch({ type: 'RESTORE_TOKEN', token: null, userRole: null });
+        dispatch({ type: "RESTORE_TOKEN", token: null, userRole: null });
       }
     };
 
     bootstrapAsync();
   }, []);
 
-  const authContext = useMemo(() => ({
-    signIn: async (data) => {
-      try {
-        const { accessToken } = data;
-        
-        if (!accessToken) {
-          throw new Error('Token not provided');
+  const authContext = useMemo(
+    () => ({
+      signIn: async (data) => {
+        try {
+          const { accessToken } = data;
+
+          if (!accessToken) {
+            throw new Error("Token not provided");
+          }
+
+          await AsyncStorage.setItem("userToken", accessToken);
+
+          const role = decodeToken(accessToken);
+
+          dispatch({ type: "SIGN_IN", token: accessToken, userRole: role });
+        } catch (error) {
+          console.error("Sign in error:", error);
+          throw error;
         }
-        
-        await AsyncStorage.setItem('userToken', accessToken);
-        
-        const { role } = decodeToken(accessToken);
-        
-        dispatch({ type: 'SIGN_IN', token: accessToken, userRole: role });
-      } catch (error) {
-        console.error("Sign in error:", error);
-        throw error;
-      }
-    },
-    signOut: async () => {
-      try {
-        await AsyncStorage.removeItem('userToken');
-        dispatch({ type: 'SIGN_OUT' });
-      } catch (error) {
-        console.error("Sign out error:", error);
-      }
-    },
-    userToken: state.userToken,
-    userRole: state.userRole,
-  }), [state.userToken, state.userRole]);
+      },
+      signOut: async () => {
+        try {
+          await AsyncStorage.removeItem("userToken");
+          dispatch({ type: "SIGN_OUT" });
+        } catch (error) {
+          console.error("Sign out error:", error);
+        }
+      },
+      userToken: state.userToken,
+      userRole: state.userRole,
+    }),
+    [state.userToken, state.userRole]
+  );
 
   if (state.isLoading) {
-    <Text>Hello</Text>
+    <Text>Hello</Text>;
   }
 
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {state.userToken ? (
-          <MainTabNavigator />
-        ) : (
-          <AuthStackNavigator />
-        )}
+        {state.userToken ? <MainTabNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
   );
