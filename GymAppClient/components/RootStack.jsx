@@ -54,9 +54,13 @@ const HomeStack = () => {
 const BookingStack = () => {
   const { userRole } = useAuth();
 
+  console.log("User role in BookingStack:", userRole); // Debugging line
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {userRole === "Coach" ? (
+
+      
+
+      {userRole.role === "Coach" ? (
         <Stack.Screen name="CoachOwn" component={CoachScheduleOwn} />
       ) : (
         <Stack.Screen name="BookingMain" component={BookingScreen} />
@@ -182,15 +186,14 @@ const AppNavigator = () => {
     userRole: null,
   });
 
-  const decodeToken = (token) => {
+  const decodeToken = (UserToken) => {
     try {
-      console.log("here is token: ", token);
-      const role = getUserRoleFromJwt(token);
+      console.log("here is token: ", UserToken);
+      const role = getUserRoleFromJwt(UserToken);
 
       console.log(role);
-      console.log(decoded);
       return {
-        token,
+        token: UserToken,
         role: role,
       };
     } catch (error) {
@@ -255,7 +258,7 @@ const AppNavigator = () => {
   );
 
   if (state.isLoading) {
-    <Text>Hello</Text>;
+    return <Text>Hello</Text>;
   }
 
   return (

@@ -14,44 +14,10 @@ const mockImages = [
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState(null); 
   const [loading, setLoading] = useState(false); 
-  const apiUrl = "http://localhost:5249/weatherforecast"; 
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(apiUrl);
-      
-      console.log('Response:', response); 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const text = await response.text();
-  
-      if (!text) {
-        throw new Error('Empty response body');
-      }
-  
-      const data = JSON.parse(text);
-      setData(data);
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching data:', error.message || error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.screenContainer}>
       <Text style={styles.title}>🏠 Home Screen</Text>
-      <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
-
-      <Button 
-        title="Fetch Data" 
-        onPress={fetchData} 
-        disabled={loading} 
-      />
 
       {loading ? (
         <Text>Loading...</Text> 
