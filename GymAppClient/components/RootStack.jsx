@@ -28,6 +28,8 @@ import SignInScreen from "./Tabs/Auth/SignInScreen";
 import SignUpScreen from "./Tabs/Auth/SignUpScreen";
 
 import { getUserRoleFromJwt } from "../utils/decodeJwt";
+import { getUserFirstNameFromJwt } from "../utils/decodeJwt";
+import { getUserLastNameFromJwt } from "../utils/decodeJwt";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -57,9 +59,6 @@ const BookingStack = () => {
   console.log("User role in BookingStack:", userRole); // Debugging line
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-      
-
       {userRole.role === "Coach" ? (
         <Stack.Screen name="CoachOwn" component={CoachScheduleOwn} />
       ) : (
@@ -159,6 +158,7 @@ const authReducer = (prevState, action) => {
         ...prevState,
         userToken: action.token,
         userRole: action.userRole,
+        fullName: action.fullName,
         isLoading: false,
       };
     case "SIGN_IN":
@@ -167,6 +167,7 @@ const authReducer = (prevState, action) => {
         isSignout: false,
         userToken: action.token,
         userRole: action.userRole,
+        fullName: action.fullName,
       };
     case "SIGN_OUT":
       return {
@@ -174,6 +175,7 @@ const authReducer = (prevState, action) => {
         isSignout: true,
         userToken: null,
         userRole: null,
+        fullName: null,
       };
   }
 };
@@ -184,39 +186,60 @@ const AppNavigator = () => {
     isSignout: false,
     userToken: null,
     userRole: null,
+    fullName: null,
   });
 
   const decodeToken = (UserToken) => {
     try {
       console.log("here is token: ", UserToken);
       const role = getUserRoleFromJwt(UserToken);
+      const firstName = getUserFirstNameFromJwt(UserToken);
+      const lastName = getUserLastNameFromJwt(UserToken);
 
-      console.log(role);
+      const fullName = `${firstName} ${lastName}`;
+      console.log(fullName);
+
+      
       return {
         token: UserToken,
         role: role,
+        fullName: fullName,
       };
     } catch (error) {
       console.error("Error decoding token:", error);
-      return { token: null, role: null };
+      return { token: null, role: null, fullName: null };
     }
   };
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken;
       try {
-        userToken = await AsyncStorage.getItem("userToken");
+        const userToken = await AsyncStorage.getItem("userToken");
 
         if (userToken) {
-          const role = decodeToken(userToken);
-          dispatch({ type: "RESTORE_TOKEN", token: userToken, userRole: role });
+          const { role, fullName } = decodeToken(userToken);
+          dispatch({
+            type: "RESTORE_TOKEN",
+            token: userToken,
+            userRole: role,
+            fullName: fullName,
+          });
         } else {
-          dispatch({ type: "RESTORE_TOKEN", token: null, userRole: null });
+          dispatch({
+            type: "RESTORE_TOKEN",
+            token: null,
+            userRole: null,
+            fullName: null,
+          });
         }
       } catch (e) {
         console.error("Failed to get token from storage:", e);
-        dispatch({ type: "RESTORE_TOKEN", token: null, userRole: null });
+        dispatch({
+          type: "RESTORE_TOKEN",
+          token: null,
+          userRole: null,
+          fullName: null,
+        });
       }
     };
 
@@ -235,14 +258,20 @@ const AppNavigator = () => {
 
           await AsyncStorage.setItem("userToken", accessToken);
 
-          const role = decodeToken(accessToken);
+          const { role, fullName } = decodeToken(accessToken);
 
-          dispatch({ type: "SIGN_IN", token: accessToken, userRole: role });
+          dispatch({
+            type: "SIGN_IN",
+            token: accessToken,
+            userRole: role,
+            fullName: fullName,
+          });
         } catch (error) {
           console.error("Sign in error:", error);
           throw error;
         }
       },
+
       signOut: async () => {
         try {
           await AsyncStorage.removeItem("userToken");
@@ -253,8 +282,9 @@ const AppNavigator = () => {
       },
       userToken: state.userToken,
       userRole: state.userRole,
+      fullName: state.fullName,
     }),
-    [state.userToken, state.userRole]
+    [state.userToken, state.userRole, state.fullName]
   );
 
   if (state.isLoading) {

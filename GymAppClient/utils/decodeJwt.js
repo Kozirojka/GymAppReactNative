@@ -29,4 +29,13 @@ export function decodeJwt(token) {
     const decoded = decodeJwt(token);
     return decoded?.role || null;
   }
-  
+
+  export function getUserLastNameFromJwt(token) {
+    const decoded = decodeJwt(token);
+    return decoded?.FirstName || null;
+  }
+
+  export function getUserFirstNameFromJwt(token) {
+    const decoded = decodeJwt(token);
+    return decoded?.LastName || null;
+  }

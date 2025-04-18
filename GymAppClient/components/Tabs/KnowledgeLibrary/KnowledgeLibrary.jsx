@@ -42,7 +42,6 @@ const KnowledgeLibrary = ({ navigation }) => {
   const [selectedTags, setSelectedTags] = useState(["saved"]);
   const { width } = useWindowDimensions();
   
-  // Динамічний розрахунок розмірів на основі ширини екрану
   const containerPadding = 20;
   const columnGap = 16;
   const numColumns = 2;

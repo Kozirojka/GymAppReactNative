@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { BASIC_API } from "../../../utils/BASIC_API";
 import nfcImage from "../../../assets/image.png";
+import { useAuth } from "../../RootStack";
 
 const SettingsOverlay = ({ visible, onClose, navigation }) => {
   return (
@@ -92,6 +93,13 @@ const SettingsOverlay = ({ visible, onClose, navigation }) => {
 const ProfileScreen = ({ navigation }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const { fullName } = useAuth();
+
+  useEffect(() => {
+    console.log("✅ FullName from context:", fullName); 
+    setProfileImage(nfcImage);
+  }, []);
+
 
   useEffect(() => {
     setProfileImage(nfcImage);
@@ -132,7 +140,9 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.profileContainer}>
         <Image source={{ uri: profileImage }} style={styles.profileImage} />
         <View style={styles.profileInfo}>
-          <Text style={styles.name}>John Doe</Text>
+          <Text style={styles.name}>
+             {fullName ? fullName : 'Anonymous User'}
+            </Text>
           <Text style={styles.subscription}>
             Subscription Start: Jan 1, 2025
           </Text>
