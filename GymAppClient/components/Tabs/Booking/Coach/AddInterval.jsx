@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 
-// створеня інтервалу для тренера. це є модульне вікно яке випливає знизу
 const AddInterval = ({ visible, onClose, onAddInterval }) => {
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
