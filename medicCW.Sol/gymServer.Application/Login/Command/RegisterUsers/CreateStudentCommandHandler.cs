@@ -4,17 +4,17 @@ using gymServer.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace gymServer.Application.Login.Command;
+namespace gymServer.Application.Login.Command.RegisterUsers;
 
-public record CreateUserCommand(RegisterUserRequest DriverRequest) : IRequest<AuthResult>;
+public record CreateStudentCommand(RegisterUserRequest DriverRequest) : IRequest<AuthResult>;
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthResult>
+public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, AuthResult>
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMediator _mediator;
     private readonly ApplicationDbContext _context; 
 
-    public CreateUserCommandHandler(UserManager<ApplicationUser> userManager, IMediator mediator,
+    public CreateStudentCommandHandler(UserManager<ApplicationUser> userManager, IMediator mediator,
         ApplicationDbContext context)
     {
         _userManager = userManager;
@@ -23,7 +23,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
     }
 
 
-    public async Task<AuthResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<AuthResult> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
         if (request == null || request.DriverRequest == null)
         {
@@ -77,6 +77,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
         }
 
         var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+        
         if (!roleResult.Succeeded)
         {
             return new AuthResult
@@ -86,13 +87,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
             };
         }
 
+       
+
+        
         string token;
         try
         {
             token = await _mediator.Send(new GenerateAccessTokenCommand
             {
                 User = user,
-                Role = "Student"
+                Role = "Coach"
             }, cancellationToken);
         }
         catch (Exception ex)
@@ -104,15 +108,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
             };
         }
 
-        var studentProfile = new StudentProfile()
+        var StudentAccount = new StudentProfile()
         {
+            
             UserId = user.Id,
+            User = user
         };
-
-
+        
         try
         {
-            _context.StudentProfiles.Add(studentProfile);
+            await _context.StudentProfiles.AddAsync(StudentAccount, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)

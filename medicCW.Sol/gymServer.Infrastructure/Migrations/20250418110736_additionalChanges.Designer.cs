@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using gymServer.Infrastructure;
@@ -11,9 +12,11 @@ using gymServer.Infrastructure;
 namespace gymServer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418110736_additionalChanges")]
+    partial class additionalChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,36 +24,6 @@ namespace gymServer.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("ApplicationUserIntervals", b =>
-                {
-                    b.Property<Guid>("IntervalsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("StudentsId")
-                        .HasColumnType("text");
-
-                    b.HasKey("IntervalsId", "StudentsId");
-
-                    b.HasIndex("StudentsId");
-
-                    b.ToTable("IntervalStudents", (string)null);
-                });
-
-            modelBuilder.Entity("CoachProfileSpecialization", b =>
-                {
-                    b.Property<int>("CoachesId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("SpecializationsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("CoachesId", "SpecializationsId");
-
-                    b.HasIndex("SpecializationsId");
-
-                    b.ToTable("CoachSpecializations", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -223,10 +196,6 @@ namespace gymServer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -319,42 +288,6 @@ namespace gymServer.Infrastructure.Migrations
                     b.ToTable("Contributions");
                 });
 
-            modelBuilder.Entity("gymServer.Domain.Intervals", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Intervals");
-                });
-
-            modelBuilder.Entity("gymServer.Domain.Specialization", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Specializations");
-                });
-
             modelBuilder.Entity("gymServer.Domain.StudentProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -373,36 +306,6 @@ namespace gymServer.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("StudentProfiles");
-                });
-
-            modelBuilder.Entity("ApplicationUserIntervals", b =>
-                {
-                    b.HasOne("gymServer.Domain.Intervals", null)
-                        .WithMany()
-                        .HasForeignKey("IntervalsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("gymServer.Domain.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("StudentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CoachProfileSpecialization", b =>
-                {
-                    b.HasOne("gymServer.Domain.CoachProfile", null)
-                        .WithMany()
-                        .HasForeignKey("CoachesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("gymServer.Domain.Specialization", null)
-                        .WithMany()
-                        .HasForeignKey("SpecializationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

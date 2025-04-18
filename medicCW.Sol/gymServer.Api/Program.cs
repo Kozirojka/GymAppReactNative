@@ -1,6 +1,7 @@
 using System.Reflection;
 using gymServer.Api.Extensions;
 using gymServer.Application.Login.Command;
+using gymServer.Application.Login.Command.RegisterUsers;
 using gymServer.Domain;
 using gymServer.Infrastructure;
 using gymServer.Infrastructure.Settings;
@@ -17,7 +18,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
 
 builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
+    cfg.RegisterServicesFromAssembly(typeof(CreateStudentCommand).Assembly));
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerWithJwtSupport();
@@ -26,17 +27,20 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JWT"));
 
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin() 
-              .AllowAnyMethod() 
-              .AllowAnyHeader(); 
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+
+builder.Services.AddIdentityCore<ApplicationUser>(options => { })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -56,9 +60,15 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseHttpsRedirection();
 
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
+    await next.Invoke();
+});
+
+
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.RegisterAllEndpoints();
 
 app.Run();

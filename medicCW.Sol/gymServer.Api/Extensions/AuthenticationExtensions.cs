@@ -1,4 +1,5 @@
 using System.Text;
+using gymServer.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -8,6 +9,8 @@ public static class AuthenticationExtensions
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtSettings = configuration.GetSection("JWT").Get<JwtSettings>();
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -18,38 +21,43 @@ public static class AuthenticationExtensions
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]!)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey!)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidIssuer = configuration["JWT:Issuer"],
-                    ValidAudience = configuration["JWT:Audience"],
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
                     ClockSkew = TimeSpan.Zero
                 };
-
+                
                 options.Events = new JwtBearerEvents
                 {
-                    OnMessageReceived = context =>
+                    OnChallenge = context =>
                     {
-                        var accessToken = context.Request.Query["access_token"];
-
-                        if (!string.IsNullOrEmpty(accessToken))
-                        {
-                            context.Token = accessToken;
-                        }
-
-                        var path = context.HttpContext.Request.Path;
-                        if (path.StartsWithSegments("/ChatHub"))
-                        {
-                            context.Token ??= context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                        }
-
-                        return Task.CompletedTask;
+                        context.HandleResponse();
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = 401;
+                        return context.Response.WriteAsync("{\"error\": \"Unauthorized\"}");
                     }
                 };
             });
+        
+        
+        Console.WriteLine(jwtSettings.Issuer);
+        Console.WriteLine(jwtSettings.Audience);
+        Console.WriteLine(jwtSettings.SecretKey);
+        
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("student", policy =>
+                policy.RequireRole("Student"));
 
-        services.AddAuthorization();
+            options.AddPolicy("coach", policy =>
+                policy.RequireRole("Coach"));
+            
+            options.AddPolicy("student_or_coach", policy =>
+                policy.RequireRole("Student", "Coach"));
+        });
 
         return services;
     }

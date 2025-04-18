@@ -12,24 +12,52 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<StudentProfile> StudentProfiles { get; set; }
     public DbSet<CoachProfile> CoachProfiles { get; set; }
-
+    public DbSet<Intervals> Intervals { get; set; }
+    public DbSet<Specialization> Specializations { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-
         builder.Entity<Contribution>()
-            .HasOne<ApplicationUser>()
+            .HasOne(c => c.User)
             .WithMany(u => u.Contributions)
             .HasForeignKey(c => c.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Entity<StudentProfile>()
+            .HasOne(sp => sp.User)
+            .WithOne(u => u.StudentProfile)
+            .HasForeignKey<StudentProfile>(sp => sp.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CoachProfile>()
+            .HasOne(cp => cp.User)
+            .WithOne(u => u.CoachProfile)
+            .HasForeignKey<CoachProfile>(cp => cp.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        
+        builder.Entity<Intervals>(entity =>
+        {
+            entity.HasKey(i => i.Id);
+
+            entity
+                .HasMany(i => i.Students)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("IntervalStudents"));
+        });
+
+        builder.Entity<CoachProfile>()
+            .HasMany(cp => cp.Specializations)
+            .WithMany(s => s.Coaches)
+            .UsingEntity(j => j.ToTable("CoachSpecializations"));
 
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole
