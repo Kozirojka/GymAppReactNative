@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { BASIC_API } from "../../../utils/BASIC_API";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const getColor = (count) => {
   if (count === 0) return "#ebedf0";
@@ -14,14 +17,46 @@ const Contributions = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const mockData = Array.from({ length: 52 }, (_, i) => ({
-        week: i + 1,
-        count: Math.floor(Math.random() * 8), 
-      }));
+      try {
+        const userToken = await AsyncStorage.getItem("userToken");
+        console.log("User token:", userToken);
 
-      setTimeout(() => {
-        setData(mockData);
-      }, 500);
+        const response = await fetch(`${BASIC_API}/contribution`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${userToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+
+        const weeksMap = Array(52).fill(0);
+
+        result.forEach((contribution) => {
+          const contributionDate = new Date(contribution.date);
+          const now = new Date();
+          const diffInDays = Math.floor((now - contributionDate) / (1000 * 60 * 60 * 24));
+          const weekIndex = Math.floor(diffInDays / 7);
+
+          if (weekIndex >= 0 && weekIndex < 52) {
+            weeksMap[51 - weekIndex] += contribution.amount; 
+          }
+        });
+
+        const formattedData = weeksMap.map((count, i) => ({
+          week: i + 1,
+          count,
+        }));
+
+        setData(formattedData);
+      } catch (error) {
+        console.error("Error fetching contributions:", error);
+      }
     };
 
     fetchData();
@@ -41,7 +76,7 @@ const Contributions = () => {
     </View>
   );
 };
-    
+
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",

@@ -7,9 +7,14 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
+
+import rooster1 from "../../../assets/rooster1.jpg";
+import rooster2 from "../../../assets/rooster2.jpg";
+import rooster3 from "../../../assets/rooster3.jpg";
 
 const mockSubscriptions = [
   {
@@ -17,51 +22,75 @@ const mockSubscriptions = [
     title: 'Morning Access',
     description: ['Available from 07:00 to 12:00', 'Access to the gym in the morning hours'],
     price: '$5',
-    color: '#4da6ff', 
+    color: '#4da6ff',
+    image: rooster1,
   },
   {
     id: '2',
     title: 'Premium subscription',
     description: [
-      'Ulimeted enter to the gym',
-      'Own couch in any time of day',
+      'Unlimited enter to the gym',
+      'Own coach any time of day',
       'from 10 - 19',
     ],
     price: '$30',
-    color: '#FFD700', 
+    color: '#FFD700',
+    image: rooster2,
   },
   {
     id: '3',
     title: 'Basic Access',
     description: ['Without personal trainer', 'Limited gym access during off-peak hours'],
     price: '$15',
-    color: '#80d4a0', 
+    color: '#80d4a0',
+    image: rooster3,
   },
 ];
 
 const Subscription = ({ navigation }) => {
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptions, setSubscriptions] = useState(mockSubscriptions);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(1); 
+  const [currentIndex, setCurrentIndex] = useState(1);
   const flatListRef = useRef(null);
 
   useEffect(() => {
+    // Симулюємо завантаження даних
     setTimeout(() => {
-      setSubscriptions(mockSubscriptions);
       setLoading(false);
-      flatListRef.current?.scrollToIndex({ index: 1, animated: false });
+      // Прокручуємо до середньої картки після завантаження
+      if (flatListRef.current) {
+        flatListRef.current.scrollToIndex({ index: 1, animated: false });
+      }
     }, 1000);
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: item.color }]}>
+  const renderItem = ({ item, index }) => (
+    <View 
+      style={[
+        styles.card, 
+        { backgroundColor: item.color, width: screenWidth * 0.8 }
+      ]}
+    >
       <Text style={styles.cardTitle}>{item.title}</Text>
+      <Image source={item.image} style={styles.cardImage} resizeMode="cover" />
       {item.description.map((line, i) => (
         <Text key={i} style={styles.cardText}>{line}</Text>
       ))}
       <Text style={styles.price}>{item.price}</Text>
     </View>
   );
+
+  const getItemLayout = (_, index) => ({
+    length: screenWidth * 0.8,
+    offset: screenWidth * index,
+    index,
+  });
+
+  const handleScroll = (event) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(contentOffsetX / screenWidth);
+    setCurrentIndex(newIndex);
+  };
 
   if (loading) {
     return (
@@ -83,15 +112,45 @@ const Subscription = ({ navigation }) => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        snapToInterval={screenWidth}
+        decelerationRate="fast"
         contentContainerStyle={styles.flatListContent}
-        onMomentumScrollEnd={(e) => {
-          const index = Math.round(e.nativeEvent.contentOffset.x / screenWidth);
-          setCurrentIndex(index);
+        getItemLayout={getItemLayout}
+        onMomentumScrollEnd={handleScroll}
+        initialScrollIndex={1}
+        onScrollToIndexFailed={() => {
+          // Обробка помилки прокрутки до індексу
+          setTimeout(() => {
+            if (flatListRef.current) {
+              flatListRef.current.scrollToIndex({ index: 1, animated: false });
+            }
+          }, 100);
         }}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => alert('Subscribed to ' + subscriptions[currentIndex].title)}>
-        <Text style={styles.buttonText}>Subscribe to {subscriptions[currentIndex]?.title}</Text>
+      <View style={styles.paginationContainer}>
+        {subscriptions.map((_, index) => (
+          <View 
+            key={index} 
+            style={[
+              styles.paginationDot, 
+              currentIndex === index && styles.activePaginationDot
+            ]} 
+          />
+        ))}
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          if (subscriptions[currentIndex]) {
+            alert('Subscribed to ' + subscriptions[currentIndex].title);
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>
+          Subscribe to {subscriptions[currentIndex]?.title || ''}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
@@ -113,6 +172,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -121,11 +181,11 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   flatListContent: {
-    alignItems: 'center',
+    paddingHorizontal: screenWidth * 0.1,
   },
   card: {
     width: screenWidth * 0.8,
-    marginHorizontal: screenWidth * 0.1 / 2,
+    marginHorizontal: screenWidth * 0.1,
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -133,6 +193,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 4,
+    height: 350, // Фіксована висота для всіх карток
+  },
+  cardImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: '#fff',
+    borderRadius: 75,
   },
   cardTitle: {
     fontSize: 20,
@@ -170,5 +239,24 @@ const styles = StyleSheet.create({
   goBackText: {
     color: '#555',
     fontSize: 16,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ccc',
+    marginHorizontal: 4,
+  },
+  activePaginationDot: {
+    backgroundColor: '#00aaff',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
 });

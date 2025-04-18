@@ -28,7 +28,6 @@ const mockSchedule = [
     },
   ];
   
-// це є особиста сторінка тренера де він може корегувати свій розкалд
 const CoatchSheduleOwn = ({ navigation }) => {
     const [schedule, setSchedule] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);

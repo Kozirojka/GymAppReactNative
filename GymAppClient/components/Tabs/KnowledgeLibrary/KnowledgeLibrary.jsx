@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  useWindowDimensions,
 } from "react-native";
 
 const exercises = [
@@ -36,11 +37,15 @@ const exercises = [
   },
 ];
 
-const screenWidth = Dimensions.get("window").width;
-
 const KnowledgeLibrary = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState(["saved"]);
+  const { width } = useWindowDimensions();
+  
+  const containerPadding = 20;
+  const columnGap = 16;
+  const numColumns = 2;
+  const cardWidth = (width - (containerPadding * 2) - ((numColumns - 1) * columnGap)) / numColumns;
 
   const toggleTag = (tag) => {
     setSelectedTags((prev) =>
@@ -52,13 +57,21 @@ const KnowledgeLibrary = ({ navigation }) => {
     const matchesSearch = item.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesTags = selectedTags.every((tag) => item.tags.includes(tag));
+    const matchesTags = selectedTags.length === 0 || 
+      selectedTags.some((tag) => item.tags.includes(tag));
     return matchesSearch && matchesTags;
   });
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <TouchableOpacity
-      style={styles.card}
+      style={[
+        styles.card,
+        { 
+          width: cardWidth, 
+          height: cardWidth,
+          marginLeft: index % numColumns !== 0 ? columnGap : 0
+        }
+      ]}
       onPress={() => navigation.navigate("ExerciseDetails", { exercise: item })}
     >
       <Text style={styles.star}>★</Text>
@@ -83,7 +96,7 @@ const KnowledgeLibrary = ({ navigation }) => {
             selectedTags.includes("saved") && styles.tagSelected,
           ]}
         >
-          <Text style={styles.tagText}>saved ✕</Text>
+          <Text style={[styles.tagText, selectedTags.includes("saved") && styles.tagTextSelected]}>saved ✕</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => toggleTag("new")}
@@ -92,7 +105,7 @@ const KnowledgeLibrary = ({ navigation }) => {
             selectedTags.includes("new") && styles.tagSelected,
           ]}
         >
-          <Text style={styles.tagText}>+ new</Text>
+          <Text style={[styles.tagText, selectedTags.includes("new") && styles.tagTextSelected]}>+ new</Text>
         </TouchableOpacity>
       </View>
 
@@ -100,14 +113,14 @@ const KnowledgeLibrary = ({ navigation }) => {
         data={filteredExercises}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        numColumns={2}
+        numColumns={numColumns}
         contentContainerStyle={styles.list}
+        columnWrapperStyle={styles.row}
+        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
       />
     </View>
   );
 };
-
-const cardSize = (screenWidth - 60) / 2;
 
 const styles = StyleSheet.create({
   container: {
@@ -119,18 +132,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0ebf5",
     padding: 12,
     borderRadius: 20,
-    marginBottom: 10,
+    marginBottom: 16,
     fontSize: 16,
   },
   tagsContainer: {
     flexDirection: "row",
-    gap: 10,
     marginBottom: 20,
+    gap: 10,
   },
   tag: {
     backgroundColor: "#eee",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 12,
   },
   tagSelected: {
@@ -140,31 +153,40 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
   },
+  tagTextSelected: {
+    color: "#fff",
+  },
   list: {
-    gap: 20,
+    paddingBottom: 20,
+  },
+  row: {
+    justifyContent: 'flex-start',
   },
   card: {
-    width: cardSize,
-    height: cardSize,
-    backgroundColor: "#ddd",
+    backgroundColor: "#f0f0f0",
     borderRadius: 12,
-    margin: 10,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   cardText: {
     fontWeight: "bold",
     fontSize: 14,
     marginTop: 20,
     textAlign: "center",
+    paddingHorizontal: 10,
   },
   star: {
     position: "absolute",
     top: 10,
     right: 12,
     fontSize: 20,
-    color: "#333",
+    color: "#b89ee3",
   },
 });
 
