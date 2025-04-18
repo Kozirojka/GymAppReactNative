@@ -9,7 +9,7 @@ public class PostContributionEndpoint : IEndpoint
 {
     public void RegisterEndpoints(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/contribution", Handler).RequireAuthorization(); 
+        endpoints.MapPost("/contribution", Handler).RequireAuthorization("Student"); 
     }
 
     private async Task<IResult> Handler(HttpContext context, ApplicationDbContext applicationDbContext)
@@ -17,9 +17,9 @@ public class PostContributionEndpoint : IEndpoint
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
-            return Results.Unauthorized();
+            return Results.Ok();
 
-        var today = DateTime.Today;
+        var today = DateTime.UtcNow.Date;
 
         var contribution = await applicationDbContext.Contributions
             .SingleOrDefaultAsync(c => c.Date == today && c.UserId == userId);

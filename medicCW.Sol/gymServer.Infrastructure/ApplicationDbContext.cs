@@ -12,8 +12,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<StudentProfile> StudentProfiles { get; set; }
     public DbSet<CoachProfile> CoachProfiles { get; set; }
@@ -22,15 +20,31 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-
+        // Відношення 1:N — Contribution -> User
         builder.Entity<Contribution>()
-            .HasOne<ApplicationUser>()
+            .HasOne(c => c.User)
             .WithMany(u => u.Contributions)
             .HasForeignKey(c => c.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        // Відношення 1:1 — StudentProfile -> User
+        builder.Entity<StudentProfile>()
+            .HasOne(sp => sp.User)
+            .WithOne(u => u.StudentProfile)
+            .HasForeignKey<StudentProfile>(sp => sp.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
+        // Відношення 1:1 — CoachProfile -> User
+        builder.Entity<CoachProfile>()
+            .HasOne(cp => cp.User)
+            .WithOne(u => u.CoachProfile)
+            .HasForeignKey<CoachProfile>(cp => cp.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Seed ролей
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole
             {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using gymServer.Infrastructure;
@@ -11,9 +12,11 @@ using gymServer.Infrastructure;
 namespace gymServer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418093631_fixChanges")]
+    partial class fixChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,8 +259,7 @@ namespace gymServer.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("CoachProfiles");
                 });
@@ -278,9 +280,15 @@ namespace gymServer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId1")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Contributions");
                 });
@@ -299,8 +307,7 @@ namespace gymServer.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("StudentProfiles");
                 });
@@ -359,8 +366,8 @@ namespace gymServer.Infrastructure.Migrations
             modelBuilder.Entity("gymServer.Domain.CoachProfile", b =>
                 {
                     b.HasOne("gymServer.Domain.ApplicationUser", "User")
-                        .WithOne("CoachProfile")
-                        .HasForeignKey("gymServer.Domain.CoachProfile", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -369,9 +376,15 @@ namespace gymServer.Infrastructure.Migrations
 
             modelBuilder.Entity("gymServer.Domain.Contribution", b =>
                 {
-                    b.HasOne("gymServer.Domain.ApplicationUser", "User")
+                    b.HasOne("gymServer.Domain.ApplicationUser", null)
                         .WithMany("Contributions")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("gymServer.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -381,8 +394,8 @@ namespace gymServer.Infrastructure.Migrations
             modelBuilder.Entity("gymServer.Domain.StudentProfile", b =>
                 {
                     b.HasOne("gymServer.Domain.ApplicationUser", "User")
-                        .WithOne("StudentProfile")
-                        .HasForeignKey("gymServer.Domain.StudentProfile", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -391,13 +404,7 @@ namespace gymServer.Infrastructure.Migrations
 
             modelBuilder.Entity("gymServer.Domain.ApplicationUser", b =>
                 {
-                    b.Navigation("CoachProfile")
-                        .IsRequired();
-
                     b.Navigation("Contributions");
-
-                    b.Navigation("StudentProfile")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
