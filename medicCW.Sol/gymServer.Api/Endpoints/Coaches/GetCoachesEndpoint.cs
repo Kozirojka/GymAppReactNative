@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using gymServer.Infrastructure;
+using gymServer.Domain;
 
 namespace gymServer.Api.Endpoints.Coaches;
 
@@ -21,9 +22,9 @@ public class GetCoachesEndpoint : IEndpoint
             .ToList();
 
         var coachesQuery = db.CoachProfiles
-            .Include(cp => cp.User)
+            .Include(cp => cp.User)  
             .Include(cp => cp.Specializations)
-            .AsQueryable();
+            .AsQueryable();  
 
         if (specializationFilters.Any())
         {
@@ -31,7 +32,17 @@ public class GetCoachesEndpoint : IEndpoint
                 cp.Specializations.Any(s => specializationFilters.Contains(s.Name.ToLower())));
         }
 
-        var coaches = await coachesQuery.ToListAsync();
+        var coaches = await coachesQuery
+            .Select(cp => new 
+            {
+                cp.UserId,
+                name = cp.User.FirstName + " " + cp.User.LastName,  
+                image = cp.User.ImageUrl,
+                tags = cp.Specializations.Select(s => s.Name),
+                hourlyRate = 25, 
+                rating = 4.8
+            })
+            .ToListAsync();
 
         return Results.Ok(coaches);
     }

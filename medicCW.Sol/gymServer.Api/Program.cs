@@ -1,6 +1,7 @@
 using System.Reflection;
 using gymServer.Api.Extensions;
 using gymServer.Application.Login.Command;
+using gymServer.Application.Login.Command.RegisterUsers;
 using gymServer.Domain;
 using gymServer.Infrastructure;
 using gymServer.Infrastructure.Settings;
@@ -17,7 +18,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GenerateAccessTokenCommand).Assembly));
 
 builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
+    cfg.RegisterServicesFromAssembly(typeof(CreateStudentCommand).Assembly));
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerWithJwtSupport();

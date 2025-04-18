@@ -11,4 +11,5 @@ public class ApplicationUser : IdentityUser
 
     public StudentProfile StudentProfile { get; set; }
     public CoachProfile CoachProfile { get; set; }
+    public string ImageUrl { get; set; }
 }
