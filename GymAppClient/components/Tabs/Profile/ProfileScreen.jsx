@@ -8,17 +8,16 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import { BASIC_API } from "../../../utils/BASIC_API";
+import nfcImage from "../../../assets/image.png"; 
 
 const SettingsOverlay = ({ visible, onClose, navigation }) => {
   return (
-    <Modal
-      transparent={true}
-      visible={visible}
-      animationType="slide"
-      onRequestClose={onClose}
-    >
+    <Modal transparent={true} visible={visible} animationType="slide" onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
@@ -39,17 +38,11 @@ const SettingsOverlay = ({ visible, onClose, navigation }) => {
                   }}
                 >
                   <Ionicons name="person-outline" size={24} color="#555" />
-                  <Text style={styles.settingsItemText}>
-                    Редагувати профіль
-                  </Text>
+                  <Text style={styles.settingsItemText}>Редагувати профіль</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.settingsItem}>
-                  <Ionicons
-                    name="notifications-outline"
-                    size={24}
-                    color="#555"
-                  />
+                  <Ionicons name="notifications-outline" size={24} color="#555" />
                   <Text style={styles.settingsItemText}>Сповіщення</Text>
                 </TouchableOpacity>
 
@@ -68,13 +61,9 @@ const SettingsOverlay = ({ visible, onClose, navigation }) => {
                   <Text style={styles.settingsItemText}>Довідка</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.settingsItem, styles.logoutItem]}
-                >
+                <TouchableOpacity style={[styles.settingsItem, styles.logoutItem]}>
                   <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
-                  <Text style={[styles.settingsItemText, styles.logoutText]}>
-                    Вийти
-                  </Text>
+                  <Text style={[styles.settingsItemText, styles.logoutText]}>Вийти</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -90,10 +79,32 @@ const ProfileScreen = ({ navigation }) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
 
   useEffect(() => {
-    setProfileImage(
-      "https://images.unsplash.com/photo-1601071160139-446ba0bc1492"
-    );
+    setProfileImage(nfcImage);
   }, []);
+
+  const handleNfcPress = async () => {
+    try {
+
+      let userToken = await AsyncStorage.getItem("userToken");
+      console.log("User token:", userToken);
+      const response = await fetch(`${BASIC_API}/contribution`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${userToken}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Помилка від сервера");
+      }
+
+      Alert.alert("✅ Успіх", "NFC запит надіслано!");
+    } catch (error) {
+      console.error("⛔️ NFC Error:", error);
+      Alert.alert("⚠️ Помилка", "Не вдалося надіслати запит.");
+    }
+  };
 
   return (
     <View style={styles.screenContainer}>
@@ -108,32 +119,24 @@ const ProfileScreen = ({ navigation }) => {
         <Image source={{ uri: profileImage }} style={styles.profileImage} />
         <View style={styles.profileInfo}>
           <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.subscription}>
-            Subscription Start: Jan 1, 2025
-          </Text>
+          <Text style={styles.subscription}>Subscription Start: Jan 1, 2025</Text>
           <Text style={styles.subscription}>Subscription End: Jan 1, 2026</Text>
         </View>
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button
-          title="Saved Exercise"
-          onPress={() => alert("Saved Exercise")}
-        />
-        <Button
-          title="Renew Subscription"
-          onPress={() => navigation.navigate("Subscription")}
-        />
+        <Button title="Saved Exercise" onPress={() => alert("Saved Exercise")} />
+        <Button title="Renew Subscription" onPress={() => navigation.navigate("Subscription")} />
       </View>
 
-      <View style={styles.nfcModule}>
+      <TouchableOpacity style={styles.nfcModule} onPress={handleNfcPress}>
         <Text style={styles.nfcText}>NFC Module</Text>
         <Image
-          source={{ uri: "https://example.com/nfc-image.png" }}
+          source={nfcImage}
           style={styles.nfcImage}
         />
         <Text style={styles.nfcText}>Use NFC here!</Text>
-      </View>
+      </TouchableOpacity>
 
       <SettingsOverlay
         visible={settingsVisible}
@@ -145,113 +148,38 @@ const ProfileScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    paddingTop: 10,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    paddingBottom: 10,
-  },
-  profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 20,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  subscription: {
-    fontSize: 14,
-    color: "#555",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 20,
-  },
+  screenContainer: { flex: 1, padding: 16 },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  headerTitle: { fontSize: 24, fontWeight: "bold" },
+  profileContainer: { flexDirection: "row", marginTop: 20, alignItems: "center" },
+  profileImage: { width: 80, height: 80, borderRadius: 40 },
+  profileInfo: { marginLeft: 16 },
+  name: { fontSize: 18, fontWeight: "bold" },
+  subscription: { fontSize: 14, color: "#666" },
+  buttonContainer: { marginVertical: 20 },
   nfcModule: {
+    marginTop: 30,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: "#e0f7fa",
     alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-    paddingTop: 20,
   },
-  nfcImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  nfcText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
-  },
+  nfcText: { fontSize: 16, color: "#00796b" },
+  nfcImage: { width: 100, height: 100, marginVertical: 10 },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" },
   settingsContainer: {
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingBottom: 30,
-    maxHeight: "70%",
+    padding: 20,
   },
-  settingsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  settingsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  settingsContent: {
-    paddingHorizontal: 20,
-  },
-  settingsItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  settingsItemText: {
-    fontSize: 16,
-    marginLeft: 16,
-    color: "#333",
-  },
-  logoutItem: {
-    borderBottomWidth: 0,
-    marginTop: 20,
-  },
-  logoutText: {
-    color: "#FF3B30",
-  },
+  settingsHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  settingsTitle: { fontSize: 20, fontWeight: "bold" },
+  settingsContent: { marginTop: 20 },
+  settingsItem: { flexDirection: "row", alignItems: "center", paddingVertical: 10 },
+  settingsItemText: { marginLeft: 10, fontSize: 16 },
+  logoutItem: { marginTop: 20 },
+  logoutText: { color: "#FF3B30" },
 });
 
 export default ProfileScreen;

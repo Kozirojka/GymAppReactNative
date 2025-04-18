@@ -4,7 +4,6 @@ import React, {
   useMemo,
   createContext,
   useContext,
-  use,
 } from "react";
 import { Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,7 +11,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
 
 import HomeScreen from "./Tabs/Home/HomeScreen";
 import ProfileScreen from "./Tabs/Profile/ProfileScreen";
@@ -207,7 +205,6 @@ const AppNavigator = () => {
       try {
         userToken = await AsyncStorage.getItem("userToken");
 
-        console.log("Hello bitch", userToken);
         if (userToken) {
           const role = decodeToken(userToken);
           dispatch({ type: "RESTORE_TOKEN", token: userToken, userRole: role });
