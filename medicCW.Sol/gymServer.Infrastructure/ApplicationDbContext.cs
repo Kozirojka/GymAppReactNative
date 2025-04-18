@@ -15,12 +15,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<StudentProfile> StudentProfiles { get; set; }
     public DbSet<CoachProfile> CoachProfiles { get; set; }
-
+    public DbSet<Intervals> Intervals { get; set; }
+    public DbSet<Specialization> Specializations { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        // Відношення 1:N — Contribution -> User
         builder.Entity<Contribution>()
             .HasOne(c => c.User)
             .WithMany(u => u.Contributions)
@@ -28,7 +29,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Відношення 1:1 — StudentProfile -> User
         builder.Entity<StudentProfile>()
             .HasOne(sp => sp.User)
             .WithOne(u => u.StudentProfile)
@@ -36,7 +36,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Відношення 1:1 — CoachProfile -> User
         builder.Entity<CoachProfile>()
             .HasOne(cp => cp.User)
             .WithOne(u => u.CoachProfile)
@@ -44,7 +43,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Seed ролей
+        
+        builder.Entity<Intervals>(entity =>
+        {
+            entity.HasKey(i => i.Id);
+
+            entity
+                .HasMany(i => i.Students)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("IntervalStudents"));
+        });
+
+        builder.Entity<CoachProfile>()
+            .HasMany(cp => cp.Specializations)
+            .WithMany(s => s.Coaches)
+            .UsingEntity(j => j.ToTable("CoachSpecializations"));
+
         builder.Entity<IdentityRole>().HasData(
             new IdentityRole
             {

@@ -54,6 +54,9 @@ public static class AuthenticationExtensions
 
             options.AddPolicy("coach", policy =>
                 policy.RequireRole("Coach"));
+            
+            options.AddPolicy("student_or_coach", policy =>
+                policy.RequireRole("Student", "Coach"));
         });
 
         return services;

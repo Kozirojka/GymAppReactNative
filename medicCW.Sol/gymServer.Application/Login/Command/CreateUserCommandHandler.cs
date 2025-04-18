@@ -76,7 +76,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
             };
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+        var roleResult = await _userManager.AddToRoleAsync(user, "Coach");
         if (!roleResult.Succeeded)
         {
             return new AuthResult
@@ -92,7 +92,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, AuthR
             token = await _mediator.Send(new GenerateAccessTokenCommand
             {
                 User = user,
-                Role = "Student"
+                Role = "Coach"
             }, cancellationToken);
         }
         catch (Exception ex)
