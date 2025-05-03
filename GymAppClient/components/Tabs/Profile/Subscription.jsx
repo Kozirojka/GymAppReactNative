@@ -54,10 +54,8 @@ const Subscription = ({ navigation }) => {
   const flatListRef = useRef(null);
 
   useEffect(() => {
-    // Симулюємо завантаження даних
     setTimeout(() => {
       setLoading(false);
-      // Прокручуємо до середньої картки після завантаження
       if (flatListRef.current) {
         flatListRef.current.scrollToIndex({ index: 1, animated: false });
       }
@@ -119,7 +117,6 @@ const Subscription = ({ navigation }) => {
         onMomentumScrollEnd={handleScroll}
         initialScrollIndex={1}
         onScrollToIndexFailed={() => {
-          // Обробка помилки прокрутки до індексу
           setTimeout(() => {
             if (flatListRef.current) {
               flatListRef.current.scrollToIndex({ index: 1, animated: false });
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 4,
-    height: 350, // Фіксована висота для всіх карток
+    height: 350, 
   },
   cardImage: {
     width: 150,

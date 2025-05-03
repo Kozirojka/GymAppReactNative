@@ -17,7 +17,6 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.screenContainer}>
-      <Text style={styles.title}>🏠 Home Screen</Text>
 
       {loading ? (
         <Text>Loading...</Text> 
@@ -25,7 +24,6 @@ const HomeScreen = ({ navigation }) => {
         data && <Text>{JSON.stringify(data)}</Text> 
       )}
 
-      <Text style={styles.subTitle}>🖼 Галерея з залу</Text>
       <Carousel
         width={PAGE_WIDTH * 0.9}
         height={200}

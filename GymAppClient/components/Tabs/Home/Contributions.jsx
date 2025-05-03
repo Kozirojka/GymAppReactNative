@@ -4,7 +4,7 @@ import { BASIC_API } from "../../../utils/BASIC_API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const getColor = (count) => {
+export const getColor = (count) => {
   if (count === 0) return "#ebedf0";
   if (count < 2) return "#c6e48b";
   if (count < 4) return "#7bc96f";
@@ -34,6 +34,8 @@ const Contributions = () => {
         }
 
         const result = await response.json();
+
+        console.log(result);
 
         const weeksMap = Array(52).fill(0);
 

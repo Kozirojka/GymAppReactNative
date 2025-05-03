@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Contributions Component creates snapshot that matches 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "padding": 10,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 16,
+        "marginBottom": 10,
+      }
+    }
+  >
+    🏋️‍♂️ Gym Activity (52 тижні)
+  </Text>
+  <View
+    style={
+      {
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "width": 260,
+      }
+    }
+  />
+</View>
+`;
+
+exports[`Contributions Component snapshot matches 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "padding": 10,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 16,
+        "marginBottom": 10,
+      }
+    }
+  >
+    🏋️‍♂️ Gym Activity (52 тижні)
+  </Text>
+  <View
+    style={
+      {
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "width": 260,
+      }
+    }
+  />
+</View>
+`;
