@@ -71,7 +71,7 @@ const CoatchSheduleOwn = ({ navigation }) => {
         borderRadius: 8,
         marginBottom: 8,
       });
-  
+    
       const renderItem = ({ item }) => (
         <View style={styles.dayContainer}>
           <Text style={styles.dateText}>{item.date}</Text>

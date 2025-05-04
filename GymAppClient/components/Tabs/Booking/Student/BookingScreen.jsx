@@ -34,6 +34,9 @@ const fetchTrainers = async (searchQuery = '', selectedTags = []) => {
     }
 
     const data = await response.json();
+
+    console.log(data);
+
     let filteredTrainers = data;
 
     if (searchQuery !== '') {
