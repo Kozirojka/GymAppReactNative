@@ -9,7 +9,7 @@ import {
 //  коли користувач натискає на інтервал у списку
 const IntervalsDetails = ({ route }) => {
     const { interval: { start, end }, date } = route.params;
-  
+       
     return (
       <View style={styles.container}>
         <Text style={styles.title}>📅 Деталі Інтервалу</Text>

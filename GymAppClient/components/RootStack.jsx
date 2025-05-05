@@ -56,10 +56,10 @@ const HomeStack = () => {
 const BookingStack = () => {
   const { userRole } = useAuth();
 
-  console.log("User role in BookingStack:", userRole); // Debugging line
+  console.log("User role in BookingStack:", userRole); 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {userRole.role === "Coach" ? (
+      {userRole === "Coach" ? (
         <Stack.Screen name="CoachOwn" component={CoachScheduleOwn} />
       ) : (
         <Stack.Screen name="BookingMain" component={BookingScreen} />

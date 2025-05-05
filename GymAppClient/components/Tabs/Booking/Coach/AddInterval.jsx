@@ -26,7 +26,11 @@ const AddInterval = ({ visible, onClose, onAddInterval }) => {
       animationType="slide"
       onRequestClose={onClose}
     >
-      <TouchableOpacity style={styles.overlay} onPress={onClose}>
+      <TouchableOpacity 
+        style={styles.overlay} 
+        onPress={onClose}
+        testID="modal-overlay"
+      >
         <TouchableOpacity activeOpacity={1} style={styles.container}>
           <Text style={styles.title}>Додати інтервал</Text>
 
