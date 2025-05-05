@@ -34,7 +34,6 @@ describe('KnowledgeLibrary', () => {
     const newTagButton = getByText('+ new');
     fireEvent.press(newTagButton);
 
-    // After toggling 'new', no exercises should match (none have 'new' tag)
     expect(queryByText('Straight Sets')).toBeNull();
     expect(queryByText('Drop Sets')).toBeNull();
   });

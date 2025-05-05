@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
-import Subscription from './Subscription'; // Уточніть шлях до вашого компоненту
+import Subscription from './Subscription'; 
 
-// Створюємо моки для залежностей
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 jest.mock('react-native', () => {
   const RN = jest.requireActual('react-native');
@@ -14,7 +13,6 @@ jest.mock('react-native', () => {
   };
 });
 
-// Мокуємо зображення
 jest.mock('../../../assets/rooster1.jpg', () => 'rooster1');
 jest.mock('../../../assets/rooster2.jpg', () => 'rooster2');
 jest.mock('../../../assets/rooster3.jpg', () => 'rooster3');
@@ -36,27 +34,22 @@ describe('Subscription компонент', () => {
   test('відображає індикатор завантаження, коли loading=true', () => {
     const { getByTestId } = render(<Subscription navigation={mockNavigation} />);
     
-    // Додайте testID для ActivityIndicator в компоненті
     expect(getByTestId('loading-indicator')).toBeTruthy();
   });
 
   test('відображає список підписок після завантаження', async () => {
     const { getByText, queryByTestId } = render(<Subscription navigation={mockNavigation} />);
     
-    // Пропускаємо таймер завантаження
     act(() => {
       jest.advanceTimersByTime(1000);
     });
     
-    // Перевіряємо, що індикатор завантаження зник
     await waitFor(() => {
       expect(queryByTestId('loading-indicator')).toBeNull();
     });
     
-    // Перевіряємо, що заголовок компоненту відображається
     expect(getByText('Choose your Subscription')).toBeTruthy();
     
-    // Перевіряємо, що назви підписок відображаються
     expect(getByText('Morning Access')).toBeTruthy();
     expect(getByText('Premium subscription')).toBeTruthy();
     expect(getByText('Basic Access')).toBeTruthy();
@@ -76,7 +69,6 @@ describe('Subscription компонент', () => {
       expect(getByText('from 10 - 19')).toBeTruthy();
       expect(getByText('$30')).toBeTruthy();
       
-      // Перевіряємо кнопку підписки
       expect(getByText('Subscribe to Premium subscription')).toBeTruthy();
     });
   });
@@ -119,10 +111,8 @@ describe('Subscription компонент', () => {
     });
     
     await waitFor(() => {
-      // Додайте testID для FlatList у компоненті
       const flatList = getByTestId('subscription-flatlist');
       
-      // Симулюємо подію скролу до першої картки
       fireEvent.scroll(flatList, {
         nativeEvent: {
           contentOffset: { x: 0, y: 0 },
@@ -131,8 +121,6 @@ describe('Subscription компонент', () => {
         },
       });
       
-      // Перевіряємо зміну currentIndex через стан точок пагінації
-      // Додайте testID для активної точки пагінації у компоненті
       expect(getByTestId('pagination-dot-active')).toHaveAttribute('data-index', '0');
     });
   });

@@ -60,7 +60,6 @@ const mockNavigation = {
   goBack: jest.fn(),
 };
 
-// Створюємо копію оригінального HomeScreen компонента для контрольованого тестування
 const OriginalHomeScreen = jest.requireActual('./HomeScreen').default;
 
 describe('HomeScreen Component', () => {
@@ -77,10 +76,9 @@ describe('HomeScreen Component', () => {
   });
 
   it('renders loading state when loading is true', () => {
-    // Створюємо модифіковану версію компонента для тестування стану loading
     const TestComponent = () => {
       const [data, setData] = React.useState(null);
-      const [loading, setLoading] = React.useState(true); // явно встановлюємо loading=true
+      const [loading, setLoading] = React.useState(true);  
       
       return (
         <View>
@@ -97,7 +95,6 @@ describe('HomeScreen Component', () => {
   it('displays data when available and not loading', () => {
     const testData = { test: 'data' };
     
-    // Створюємо модифіковану версію компонента для тестування відображення даних
     const TestComponent = () => {
       const [data, setData] = React.useState(testData);
       const [loading, setLoading] = React.useState(false);
